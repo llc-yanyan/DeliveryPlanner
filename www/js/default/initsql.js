@@ -36,6 +36,7 @@ app.value('initService', {
         "mon": 1,
         "wed": 2,
         "fri": 3,
+        "other": 10,
       },
       {
         "clientId": 1,
@@ -44,6 +45,7 @@ app.value('initService', {
         "mon": 4,
         "wed": 5,
         "fri": 6,
+        "other": 0,
       },
       {
         "clientId": 2,
@@ -52,6 +54,7 @@ app.value('initService', {
         "mon": 3,
         "wed": 1,
         "fri": 2,
+        "other": 0,
       },
       {
         "clientId": 1,
@@ -60,6 +63,7 @@ app.value('initService', {
         "mon": 4,
         "wed": 5,
         "fri": 6,
+        "other": 0,
       },
       ]
 });

@@ -63,17 +63,26 @@
 
         <table ng-table="vm.tableParams" class="table" show-filter="true" width="100%">
           <tr ng-repeat="delivery in deliveryList">
-            <td title="'CategoryName'" class="categoryName" width="10%">
-              {{delivery.categoryName}}</td>
-            <td title="'ClientName'" class="clientName" width="10%">
-              {{delivery.clientName}}</td>
-            <td width="80%">
+            <td width="15%">
+              <table>
+                <tr>
+                  <td title="'CategoryName'" class="categoryName" width="50%">
+                    {{delivery.categoryName}}</td>
+              	</tr>
+                <tr>
+                  <td title="'ClientName'" class="clientName" width="50%">
+                    {{delivery.clientName}}</td>
+              	</tr>
+              </table>
+            </td>
+            <td width="85%">
               <table class="table" width="100%">
                 <tr>
-                  <th width="55%" style="background-color: #eeeeee;">商品</th>
-                  <th width="15%" style="background-color: #eeeeee;">月曜</th>
-                  <th width="15%" style="background-color: #eeeeee;">水曜</th>
-                  <th width="15%" style="background-color: #eeeeee;">金曜</th>
+                  <th width="52%" style="background-color: #eeeeee;">商品</th>
+                  <th width="12%" style="background-color: #eeeeee;">月曜</th>
+                  <th width="12%" style="background-color: #eeeeee;">水曜</th>
+                  <th width="12%" style="background-color: #eeeeee;">金曜</th>
+                  <th width="12%" style="background-color: #eeeeee;">他</th>
                 </tr>
                 <tr ng-repeat="product2 in delivery.products">
                   <td title="'ProductName'" class="productName" style="background-color: #f0f7ff;">
@@ -86,6 +95,9 @@
                     </td>
                   <td title="'Fri'" class="weekdayName thursday">
                     <ons-input id="fri" modifier="underbar" float ng-model="product2.fri" type="number" min=0 max=99></ons-input>
+                    </td>
+                  <td title="'Other'" class="weekdayName other">
+                    <ons-input id="other" modifier="underbar" float ng-model="product2.other" type="number" min=0 max=99></ons-input>
                     </td>
                 </tr>
               </table>
@@ -105,22 +117,26 @@
 
         <table ng-table="vm.tableParams" class="table" show-filter="true" width="100%">
           <tr>
-            <th width="40%" style="background-color: #eeeeee;">商品</th>
-            <th width="20%" style="background-color: #eeeeee;">月曜</th>
-            <th width="20%" style="background-color: #eeeeee;">水曜</th>
-            <th width="20%" style="background-color: #eeeeee;">金曜</th>
+            <th width="45%" style="background-color: #eeeeee;">商品</th>
+            <th width="15%" style="background-color: #eeeeee;">月曜</th>
+            <th width="15%" style="background-color: #eeeeee;">水曜</th>
+            <th width="15%" style="background-color: #eeeeee;">金曜</th>
+            <th width="10%" style="background-color: #eeeeee;">他</th>
           </tr>
           <tr ng-repeat="product in productList">
             <td title="'Name'" class="productName" style="background-color: #f0f7ff;">
               {{product.productName}}</td>
             <td title="'Mon'" class="weekdayName monday">
-              {{product.mon}}個
+              {{product.mon}}
               </td>
             <td title="'Wed'" class="weekdayName wednesday">
-              {{product.wed}}個
+              {{product.wed}}
               </td>
             <td title="'Fri'" class="weekdayName thursday">
-              {{product.fri}}個
+              {{product.fri}}
+              </td>
+            <td title="'Other'" class="weekdayName other">
+              {{product.other}}
               </td>
           </tr>
         </table>

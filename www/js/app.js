@@ -1,13 +1,12 @@
 // This is a JavaScript file
 var app = angular.module( 'myApp', ['onsen.directives']);
 
-app.controller('AppController', function(deliveryService, initService, $scope) {
+app.controller('AppController', function(initService, $scope) {
     $scope.title = "コース別仕訳表";
     $scope.cource = "A6";
-    // $scope.productList = JSON.parse(JSON.stringify(deliveryService.products));
     $scope.productList = {};
     $scope.deliveryList = {};
-    var debug = 0;
+    var debug = 1;
     
     // 開始日の算出
     today = new Date();
@@ -33,7 +32,7 @@ app.controller('AppController', function(deliveryService, initService, $scope) {
                 console.log('Start createDatabase');
                 var db = window.openDatabase("Database", "1.0", "TestDatabase", 200000);
                 if(db.version == "" || debug == 1){
-                    alert("1- create db version:" + db.version);
+                    // alert("1- create db version:" + db.version);
                     console.log('not exist db');
                     // DB無いので作ります
                     db.transaction(
@@ -55,19 +54,19 @@ app.controller('AppController', function(deliveryService, initService, $scope) {
                             }
                             // 初期データの作成(delivery)
                             tx.executeSql('DROP TABLE IF EXISTS TDelivery');
-                            tx.executeSql('CREATE TABLE IF NOT EXISTS TDelivery (deliveryId unique, clientId, productId, deliveryStDate text, mon, wed, fri)');
+                            tx.executeSql('CREATE TABLE IF NOT EXISTS TDelivery (deliveryId unique, clientId, productId, deliveryStDate text, mon, wed, fri, other)');
                             for (i = 0; i < initService.init_delivery.length; i++) {
                                 // alert(initService.init_delivery[i].clientId);
-                                tx.executeSql('INSERT INTO TDelivery VALUES (' + (i + 1) + ', ' + initService.init_delivery[i].clientId + ', ' + initService.init_delivery[i].productId + ', "' + initService.init_delivery[i].deliveryStDate + '", ' + initService.init_delivery[i].mon + ', ' + initService.init_delivery[i].wed + ', ' + initService.init_delivery[i].fri + ')');
+                                tx.executeSql('INSERT INTO TDelivery VALUES (' + (i + 1) + ', ' + initService.init_delivery[i].clientId + ', ' + initService.init_delivery[i].productId + ', "' + initService.init_delivery[i].deliveryStDate + '", ' + initService.init_delivery[i].mon + ', ' + initService.init_delivery[i].wed + ', ' + initService.init_delivery[i].fri + ', ' + initService.init_delivery[i].other + ')');
                             }
                         }, 
                         function(){
                             // 失敗時
-                            alert("1- create fail");
+                            // alert("1- create fail");
                         }, 
                         function(){
                             // 成功時
-                            alert("1- create success");
+                            // alert("1- create success");
                         }
                     );
                 }else{
@@ -86,18 +85,18 @@ app.controller('AppController', function(deliveryService, initService, $scope) {
             setTimeout(function(){
                 console.log('Start selectDatabase');
                 var db = window.openDatabase("Database","1.0","TestDatabase",200000);
-                alert("2- db version:" + db.version);
+                // alert("2- db version:" + db.version);
                 db.transaction(
                     function(tx){
                         // alert("dd");
-                        tx.executeSql('SELECT m1.categoryName as categoryName, m1.clientName as clientName, m2.productName as productName, t.mon as mon, t.wed as wed, t.fri as fri FROM (SELECT * FROM TDelivery WHERE deliveryStDate = "' + $scope.weekDaySt + '") t LEFT JOIN MClient m1 ON m1.clientId = t.clientId LEFT JOIN MProduct m2 ON m2.productId = t.productId', [], querySuccess, errorCB);
+                        tx.executeSql('SELECT m1.categoryName as categoryName, m1.clientName as clientName, m2.productName as productName, t.mon as mon, t.wed as wed, t.fri as fri, t.other as other FROM (SELECT * FROM TDelivery WHERE deliveryStDate = "' + $scope.weekDaySt + '") t LEFT JOIN MClient m1 ON m1.clientId = t.clientId LEFT JOIN MProduct m2 ON m2.productId = t.productId', [], querySuccess, errorCB);
                     }, 
                     function(){
-                        alert("2- select fail");
+                        // alert("2- select fail");
                         // 失敗時
                     },
                     function(){
-                        alert("2- select success");
+                        // alert("2- select success");
                         // 成功時
                     }
                 );                    
@@ -105,7 +104,7 @@ app.controller('AppController', function(deliveryService, initService, $scope) {
             },100);
             
             var querySuccess = function(tx,results){
-                alert("2- query success");
+                // alert("2- query success");
                 var len = results.rows.length;
                 // alert(len);
                 console.log('Start query');
@@ -115,10 +114,16 @@ app.controller('AppController', function(deliveryService, initService, $scope) {
                 // クエリ成功時の処理をかく（results →　testdata）
                 // *************************
                 for (var i = 0; i < len; i++) {
-                    alert(results.rows.item(i).categoryName + "/" + results.rows.item(i).clientName + "/" + results.rows.item(i).productName + "/" + results.rows.item(i).mon + "/" + results.rows.item(i).wed + "/" + results.rows.item(i).fri);
+                    // alert(results.rows.item(i).categoryName + "/" + results.rows.item(i).clientName + "/" + results.rows.item(i).productName + "/" + results.rows.item(i).mon + "/" + results.rows.item(i).wed + "/" + results.rows.item(i).fri);
                     var rowData = {'categoryName' : results.rows.item(i).categoryName, 'clientName' : results.rows.item(i).clientName};
                     var productArray = new Array();
-                    var rowProductData = {"productName" : results.rows.item(i).productName, "mon" : results.rows.item(i).mon, "wed" : results.rows.item(i).wed, "fri" : results.rows.item(i).fri};
+                    // var rowProductData = {"productName" : results.rows.item(i).productName, "mon" : results.rows.item(i).mon, "wed" : results.rows.item(i).wed, "fri" : results.rows.item(i).fri, "other" : results.rows.item(i).other};
+                    var rowProductData = {};
+                    rowProductData['productName'] = results.rows.item(i).productName;
+                    rowProductData['mon'] = results.rows.item(i).mon
+                    rowProductData['wed'] = results.rows.item(i).wed
+                    rowProductData['fri'] = results.rows.item(i).fri
+                    rowProductData['other'] = results.rows.item(i).other;
                     productArray.push(rowProductData);
                     rowData['products'] = productArray;
                     deliveryArray.push(rowData);
@@ -144,18 +149,18 @@ app.controller('AppController', function(deliveryService, initService, $scope) {
             setTimeout(function(){
                 console.log('Start selectDatabase');
                 var db = window.openDatabase("Database","1.0","TestDatabase",200000);
-                alert("3- db version:" + db.version);
+                // alert("3- db version:" + db.version);
                 db.transaction(
                     function(tx){
                         // alert("dd");
-                        tx.executeSql('SELECT m.productName, ifnull(sum(t.mon), 0) as mon, ifnull(sum(t.wed), 0) as wed, ifnull(sum(t.fri), 0) as fri FROM MProduct m LEFT JOIN (SELECT * FROM TDelivery WHERE deliveryStDate = "' + $scope.weekDaySt + '") t on m.productId = t.productId GROUP BY m.productId', [], querySuccess, errorCB);
+                        tx.executeSql('SELECT m.productName, ifnull(sum(t.mon), 0) as mon, ifnull(sum(t.wed), 0) as wed, ifnull(sum(t.fri), 0) as fri, ifnull(sum(t.other), 0) as other FROM MProduct m LEFT JOIN (SELECT * FROM TDelivery WHERE deliveryStDate = "' + $scope.weekDaySt + '") t on m.productId = t.productId GROUP BY m.productId', [], querySuccess, errorCB);
                     }, 
                     function(){
-                        // alert("select fail");
+                        // alert("3- select fail");
                         // 失敗時
                     },
                     function(){
-                        // alert("select success");
+                        // alert("3- select success");
                         // 成功時
                     }
                 );                    
@@ -163,7 +168,7 @@ app.controller('AppController', function(deliveryService, initService, $scope) {
             },100);
             
             var querySuccess = function(tx,results){
-                alert("3- query success");
+                // alert("3- query success");
                 var len = results.rows.length;
                 // alert(len);
                 console.log('Start query');
@@ -179,6 +184,7 @@ app.controller('AppController', function(deliveryService, initService, $scope) {
                     rowData['mon'] = results.rows.item(i).mon;
                     rowData['wed'] = results.rows.item(i).wed;
                     rowData['fri'] = results.rows.item(i).fri;
+                    rowData['other'] = results.rows.item(i).other;
                     productArray.push(rowData);
                 }
                  $scope.productList = productArray;
