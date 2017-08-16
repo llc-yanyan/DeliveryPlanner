@@ -58,7 +58,12 @@
   <ons-template id="page1.html">
     <ons-page>
       <div class="content" style="text-align: center">
-        <h2>配達先別</h2>({{weekDaySt}}〜{{weekDayEd}})
+        <h2>配達先別</h2>
+        <ons-row>
+          <ons-col></ons-col>
+          <ons-col width="60%"><ons-button modifier="quiet" ng-click="prevWeek()">&lt;</ons-button>({{weekDaySt}}〜{{weekDayEd}})<ons-button modifier="quiet" ng-click="nextWeek()">&gt;</ons-button></ons-col>
+          <ons-col><ons-button>更新</ons-button></ons-col>
+        </ons-row>
         <hr/>
 
         <table ng-table="vm.tableParams" class="table" show-filter="true" width="100%">
@@ -112,7 +117,12 @@
     <ons-page>
 
       <div class="content" style="text-align: center">
-        <h2>商品別</h2>({{weekDaySt}}〜{{weekDayEd}})
+        <h2>商品別</h2>
+        <ons-row>
+          <ons-col></ons-col>
+          <ons-col width="60%"><ons-button modifier="quiet" ng-click="prevWeek()">&lt;</ons-button>({{weekDaySt}}〜{{weekDayEd}})<ons-button modifier="quiet" ng-click="nextWeek()">&gt;</ons-button></ons-col>
+          <ons-col></ons-col>
+        </ons-row>
         <hr/>
 
         <table ng-table="vm.tableParams" class="table" show-filter="true" width="100%">

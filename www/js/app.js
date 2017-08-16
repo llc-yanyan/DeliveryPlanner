@@ -1,7 +1,7 @@
 // This is a JavaScript file
 var app = angular.module( 'myApp', ['onsen.directives']);
 
-app.controller('AppController', function(initService, $scope) {
+app.controller('AppController', function(initService, calcStWeekDate, calcEdWeekDate, $scope) {
     $scope.title = "コース別仕訳表";
     $scope.cource = "A6";
     $scope.productList = {};
@@ -16,13 +16,8 @@ app.controller('AppController', function(initService, $scope) {
         today.setDate(today.getDate() - (today.getDay() - 1));
     }
     
-    // 最終日の算出
-    $scope.weekDaySt = today.getFullYear() +  "-" + (today.getMonth() + 1) + "-" + today.getDate();
-    var calDate = new Date( today );
-    // alert(calDate);
-    calDate.setDate(calDate.getDate() + 6);
-    // alert(calDate);
-    $scope.weekDayEd = calDate.getFullYear() + "-" + (calDate.getMonth() + 1) + "-" + calDate.getDate();
+    $scope.weekDaySt = calcStWeekDate(today);
+    $scope.weekDayEd = calcEdWeekDate(today);
     
     // DB生成
     var createDatabase = function(){
@@ -201,6 +196,27 @@ app.controller('AppController', function(initService, $scope) {
             };
         });
     };
-
+    
     createDatabase().then(selectProductDatabase).then(selectDeliveryDatabase());
+    
+    $scope.prevWeek = function() {
+        // 開始日の算出
+        today.setDate(today.getDate() - 7);
+        // alert(today.getDate());
+        $scope.weekDaySt = calcStWeekDate(today);
+        $scope.weekDayEd = calcEdWeekDate(today);
+        
+        createDatabase().then(selectProductDatabase).then(selectDeliveryDatabase());
+    };
+    
+    $scope.nextWeek = function() {
+        // 開始日の算出
+        today.setDate(today.getDate() + 7);
+        // alert(today.getDate());
+        $scope.weekDaySt = calcStWeekDate(today);
+        $scope.weekDayEd = calcEdWeekDate(today);
+        
+        createDatabase().then(selectProductDatabase).then(selectDeliveryDatabase());
+    };
+    
 });
