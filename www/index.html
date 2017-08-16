@@ -62,14 +62,18 @@
         <ons-row>
           <ons-col></ons-col>
           <ons-col width="60%"><ons-button modifier="quiet" ng-click="prevWeek()">&lt;</ons-button>({{weekDaySt}}〜{{weekDayEd}})<ons-button modifier="quiet" ng-click="nextWeek()">&gt;</ons-button></ons-col>
-          <ons-col><ons-button>更新</ons-button></ons-col>
+          <ons-col>
+            <ons-button ng-click="insert()" ng-hide="insertBtnHide">追加</ons-button>
+            <ons-button ng-click="update()" ng-hide="updateBtnHide">更新</ons-button>
+            <ons-button ng-click="copy()" ng-hide="copyBtnHide">コピー</ons-button>
+          </ons-col>
         </ons-row>
         <hr/>
 
         <table ng-table="vm.tableParams" class="table" show-filter="true" width="100%">
           <tr ng-repeat="delivery in deliveryList">
             <td width="15%">
-              <table>
+              <table style="background-color: #fff7f0;">
                 <tr>
                   <td title="'CategoryName'" class="categoryName" width="50%">
                     {{delivery.categoryName}}</td>

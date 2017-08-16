@@ -59,7 +59,7 @@ app.value('initService', {
       {
         "clientId": 1,
         "productId": 3,
-        "deliveryStDate": "2017-8-21",
+        "deliveryStDate": "2017-8-7",
         "mon": 4,
         "wed": 5,
         "fri": 6,
