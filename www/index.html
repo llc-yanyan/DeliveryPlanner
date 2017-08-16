@@ -1,0 +1,133 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta http-equiv="Content-Security-Policy" content="default-src * data: gap: https://ssl.gstatic.com; style-src * 'unsafe-inline'; script-src * 'unsafe-inline' 'unsafe-eval'">
+  <script src="components/loader.js"></script>
+  <script src="lib/angular/angular.min.js"></script>
+  <script src="lib/onsenui/js/onsenui.min.js"></script>
+  <script src="lib/onsenui/js/angular-onsenui.min.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/service/delivery.js"></script>
+  <script src="js/default/initsql.js"></script>
+
+  <link rel="stylesheet" href="components/loader.css">
+  <link rel="stylesheet" href="lib/onsenui/css/onsenui.css">
+  <link rel="stylesheet" href="lib/onsenui/css/onsen-css-components.css">
+  <link rel="stylesheet" href="css/style.css">
+
+  <style>
+  .text-input--material {
+    font-size: 24px;
+    height: 40px;
+  }
+  .categoryName {
+    font-size: 18px;
+  }
+  .clientName {
+    font-size: 24px;
+  }
+  .productName {
+    font-size: 24px;
+  }
+  .weekdayName {
+    font-size: 24px;
+  }
+  </style>
+  <script>
+    ons.bootstrap(['myApp'])
+    ons.ready(function() {
+        console.log("Onsen UI is ready!");
+    });
+</script>
+</head>
+<body>
+  <ons-page ng-controller="AppController">
+    <ons-toolbar>
+      <div class="center">{{title}}</div>
+      <div class="right">{{cource}}コース</div>
+    </ons-toolbar>
+
+    <ons-tabbar position="bottom">
+      <ons-tab page="page1.html" label="配達先別" active></ons-tab>
+      <ons-tab page="page2.html" label="商品別"></ons-tab>
+    </ons-tabbar>
+  </ons-page>
+
+  <ons-template id="page1.html">
+    <ons-page>
+      <div class="content" style="text-align: center">
+        <h2>配達先別</h2>({{weekDaySt}}〜{{weekDayEd}})
+        <hr/>
+
+        <table ng-table="vm.tableParams" class="table" show-filter="true" width="100%">
+          <tr ng-repeat="delivery in deliveryList">
+            <td title="'CategoryName'" class="categoryName" width="10%">
+              {{delivery.categoryName}}</td>
+            <td title="'ClientName'" class="clientName" width="10%">
+              {{delivery.clientName}}</td>
+            <td width="80%">
+              <table class="table" width="100%">
+                <tr>
+                  <th width="55%" style="background-color: #eeeeee;">商品</th>
+                  <th width="15%" style="background-color: #eeeeee;">月曜</th>
+                  <th width="15%" style="background-color: #eeeeee;">水曜</th>
+                  <th width="15%" style="background-color: #eeeeee;">金曜</th>
+                </tr>
+                <tr ng-repeat="product2 in delivery.products">
+                  <td title="'ProductName'" class="productName" style="background-color: #f0f7ff;">
+                    {{product2.productName}}</td>
+                  <td title="'Mon'" class="weekdayName monday">
+                    <ons-input id="mon" modifier="underbar" float ng-model="product2.mon" type="number" min=0 max=99></ons-input>
+                    </td>
+                  <td title="'Wed'" class="weekdayName wednesday">
+                    <ons-input id="wed" modifier="underbar" float ng-model="product2.wed" type="number" min=0 max=99></ons-input>
+                    </td>
+                  <td title="'Fri'" class="weekdayName thursday">
+                    <ons-input id="fri" modifier="underbar" float ng-model="product2.fri" type="number" min=0 max=99></ons-input>
+                    </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </ons-page>
+  </ons-template>
+
+  <ons-template id="page2.html">
+    <ons-page>
+
+      <div class="content" style="text-align: center">
+        <h2>商品別</h2>({{weekDaySt}}〜{{weekDayEd}})
+        <hr/>
+
+        <table ng-table="vm.tableParams" class="table" show-filter="true" width="100%">
+          <tr>
+            <th width="40%" style="background-color: #eeeeee;">商品</th>
+            <th width="20%" style="background-color: #eeeeee;">月曜</th>
+            <th width="20%" style="background-color: #eeeeee;">水曜</th>
+            <th width="20%" style="background-color: #eeeeee;">金曜</th>
+          </tr>
+          <tr ng-repeat="product in productList">
+            <td title="'Name'" class="productName" style="background-color: #f0f7ff;">
+              {{product.productName}}</td>
+            <td title="'Mon'" class="weekdayName monday">
+              {{product.mon}}個
+              </td>
+            <td title="'Wed'" class="weekdayName wednesday">
+              {{product.wed}}個
+              </td>
+            <td title="'Fri'" class="weekdayName thursday">
+              {{product.fri}}個
+              </td>
+          </tr>
+        </table>
+
+      </div>
+    </ons-page>
+  </ons-template>
+
+</body>
+</html>
