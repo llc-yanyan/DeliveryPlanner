@@ -120,28 +120,30 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
                 // *************************
                 var fflg = false;
                 var _clientId;
+                var productArray = new Array();
+                var rowData = {};
                 for (var i = 0; i < len; i++) {
                   // alert(results.rows.item(i).categoryName + "/" + results.rows.item(i).clientName + "/" + results.rows.item(i).productName + "/" + results.rows.item(i).deliveryId + "/" + results.rows.item(i).mon + "/" + results.rows.item(i).wed + "/" + results.rows.item(i).fri);
                   fflg = _clientId == results.rows.item(i).clientId ? true : false;
                   if (!fflg) {
-                    var rowData = {};
-                    rowData['categoryName'] = results.rows.item(i).categoryName;
-                    rowData['clientName'] = results.rows.item(i).clientName;
-                    var productArray = new Array();
+                    rowData = {};
+                    rowData.categoryName = results.rows.item(i).categoryName;
+                    rowData.clientName = results.rows.item(i).clientName;
+                    productArray = new Array();
                   }
                   var rowProductData = {};
-                  rowProductData['deliveryId'] = results.rows.item(i).deliveryId;
-                  rowProductData['clientId'] = results.rows.item(i).clientId;
-                  rowProductData['productId'] = results.rows.item(i).productId;
-                  rowProductData['deliveryStDate'] = results.rows.item(i).deliveryStDate;
-                  rowProductData['productName'] = results.rows.item(i).productName;
-                  rowProductData['mon'] = results.rows.item(i).mon
-                  rowProductData['wed'] = results.rows.item(i).wed
-                  rowProductData['fri'] = results.rows.item(i).fri
-                  rowProductData['other'] = results.rows.item(i).other;
+                  rowProductData.deliveryId = results.rows.item(i).deliveryId;
+                  rowProductData.clientId = results.rows.item(i).clientId;
+                  rowProductData.productId = results.rows.item(i).productId;
+                  rowProductData.deliveryStDate = results.rows.item(i).deliveryStDate;
+                  rowProductData.productName = results.rows.item(i).productName;
+                  rowProductData.mon = results.rows.item(i).mon;
+                  rowProductData.wed = results.rows.item(i).wed;
+                  rowProductData.fri = results.rows.item(i).fri;
+                  rowProductData.other = results.rows.item(i).other;
                   productArray.push(rowProductData);
                   if (!fflg) {
-                    rowData['products'] = productArray;
+                    rowData.products = productArray;
                     deliveryArray.push(rowData);
                   }
                   _clientId = results.rows.item(i).clientId;
@@ -172,7 +174,7 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
                 db.transaction(
                     function(tx){
                         // alert("dd");
-                        tx.executeSql('SELECT m.productName, ifnull(sum(t.mon), 0) as mon, ifnull(sum(t.wed), 0) as wed, ifnull(sum(t.fri), 0) as fri, ifnull(sum(t.other), 0) as other FROM MProduct m LEFT JOIN (SELECT * FROM TDelivery WHERE deliveryStDate = "' + $scope.weekDaySt + '") t on m.productId = t.productId GROUP BY m.productId', [], querySuccess, errorCB);
+                        tx.executeSql('SELECT m.productId, m.productName, ifnull(sum(t.mon), 0) as mon, ifnull(sum(t.wed), 0) as wed, ifnull(sum(t.fri), 0) as fri, ifnull(sum(t.other), 0) as other FROM MProduct m LEFT JOIN (SELECT * FROM TDelivery WHERE deliveryStDate = "' + $scope.weekDaySt + '") t on m.productId = t.productId GROUP BY m.productId', [], querySuccess, errorCB);
                     }, 
                     function(){
                         // alert("3- select fail");
@@ -199,11 +201,12 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
                 for (var i = 0; i < len; i++) {
                     // alert(results.rows.item(i).productName + '/' + results.rows.item(i).mon + '/' + results.rows.item(i).wed + '/' + results.rows.item(i).fri);
                     var rowData = {};
-                    rowData['productName'] = results.rows.item(i).productName;
-                    rowData['mon'] = results.rows.item(i).mon;
-                    rowData['wed'] = results.rows.item(i).wed;
-                    rowData['fri'] = results.rows.item(i).fri;
-                    rowData['other'] = results.rows.item(i).other;
+                    rowData.productId = results.rows.item(i).productId;
+                    rowData.productName = results.rows.item(i).productName;
+                    rowData.mon = results.rows.item(i).mon;
+                    rowData.wed = results.rows.item(i).wed;
+                    rowData.fri = results.rows.item(i).fri;
+                    rowData.other = results.rows.item(i).other;
                     productArray.push(rowData);
                 }
                  $scope.productList = productArray;
@@ -260,28 +263,30 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
                 // *************************
                 var fflg = false;
                 var _clientId;
+                var productArray = new Array();
+                var rowData = {};
                 for (var i = 0; i < len; i++) {
                   // alert(results.rows.item(i).categoryName + "/" + results.rows.item(i).clientName + "/" + results.rows.item(i).productName + "/" + results.rows.item(i).mon + "/" + results.rows.item(i).wed + "/" + results.rows.item(i).fri);
                   fflg = _clientId == results.rows.item(i).clientId ? true : false;
                   if (!fflg) {
-                    var rowData = {};
-                    rowData['categoryName'] = results.rows.item(i).categoryName;
-                    rowData['clientName'] = results.rows.item(i).clientName;
-                    var productArray = new Array();
+                    rowData = {};
+                    rowData.categoryName = results.rows.item(i).categoryName;
+                    rowData.clientName = results.rows.item(i).clientName;
+                    productArray = new Array();
                   }
                   var rowProductData = {};
-                  rowProductData['deliveryId'] = "";
-                  rowProductData['clientId'] = results.rows.item(i).clientId;
-                  rowProductData['productId'] = results.rows.item(i).productId;
-                  rowProductData['deliveryStDate'] = $scope.weekDaySt;
-                  rowProductData['productName'] = results.rows.item(i).productName;
-                  rowProductData['mon'] = results.rows.item(i).mon
-                  rowProductData['wed'] = results.rows.item(i).wed
-                  rowProductData['fri'] = results.rows.item(i).fri
-                  rowProductData['other'] = results.rows.item(i).other;
+                  rowProductData.deliveryId = "";
+                  rowProductData.clientId = results.rows.item(i).clientId;
+                  rowProductData.productId = results.rows.item(i).productId;
+                  rowProductData.deliveryStDate = $scope.weekDaySt;
+                  rowProductData.productName = results.rows.item(i).productName;
+                  rowProductData.mon = results.rows.item(i).mon;
+                  rowProductData.wed = results.rows.item(i).wed;
+                  rowProductData.fri = results.rows.item(i).fri;
+                  rowProductData.other = results.rows.item(i).other;
                   productArray.push(rowProductData);
                   if (!fflg) {
-                    rowData['products'] = productArray;
+                    rowData.products = productArray;
                     deliveryArray.push(rowData);
                   }
                   _clientId = results.rows.item(i).clientId;
@@ -336,7 +341,7 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
     $scope.update = function() {
       updateDeliveryDatabase().then(selectProductDatabase()).then(selectDeliveryDatabase());
       $scope.updateAlert();
-    }
+    };
 
     $scope.updateAlert = function() {
       ons.notification.alert({
@@ -346,19 +351,21 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
         animation: 'default',
         callback: function() {
         }
-      })
-    }
+      });
+    };
 
     $scope.copy = function() {
       copyDeliveryDatabase();
-    }
+    };
 
+    // 配達先データのInsert
     $scope.insert = function() {
       insertDeliveryDatabase().then(selectProductDatabase()).then(selectDeliveryDatabase());
       $scope.insertBtnHide = true;
       $scope.insertAlert();
-    }
+    };
 
+    // 配達先データのInsert後、Dialog
     $scope.insertAlert = function() {
       ons.notification.alert({
         title: '追加',
@@ -367,8 +374,46 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
         animation: 'default',
         callback: function() {
         }
-      })
-    }
+      });
+    };
+
+    // 顧客データのInsert
+    $scope.insertClient = function() {
+      ons.createDialog('clientAddDialog.html', {
+        parentScope: $scope
+      }).then(function(clientAddDialog) {
+        clientAddDialog.show();
+      });
+    };
+
+    // 顧客データのUpdate
+    $scope.updateClient = function() {
+      ons.createDialog('clientUpdDialog.html', {
+        parentScope: $scope
+      }).then(function(clientUpdDialog) {
+        clientUpdDialog.show();
+      });
+    };
+
+    // 商品データのInsert
+    $scope.insertProduct = function() {
+      ons.createDialog('productAddDialog.html', {
+        parentScope: $scope
+      }).then(function(productAddDialog) {
+        productAddDialog.show();
+      });
+    };
+
+    // 商品データのUpdate
+    $scope.updateProduct = function(_productId, _productName) {
+      ons.createDialog('productUpdDialog.html', {
+        parentScope: $scope
+      }).then(function(productUpdDialog) {
+        $scope._productName = _productName;
+        $scope._productId = _productId;
+        productUpdDialog.show();
+      });
+    };
 
     // Delivery Database for update
     var updateDeliveryDatabase = function(){
@@ -390,7 +435,7 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
                     // alert(JSON.stringify(rowData.products[i2]));
                     var rowData2 = rowData.products[i2];
                     // alert('UPDATE TDelivery SET mon = ' + rowData2['mon'] + ', wed = ' + rowData2['wed'] + ', fri = ' + rowData2['fri'] + ', other = ' + rowData2['other'] + ' WHERE clientId = ' + rowData2['clientId'] + ' AND productId = ' + rowData2['productId'] + ' AND deliveryStDate = "' + rowData2['deliveryStDate']+ '";');
-                    tx.executeSql('UPDATE TDelivery SET mon = ' + rowData2['mon'] + ', wed = ' + rowData2['wed'] + ', fri = ' + rowData2['fri'] + ', other = ' + rowData2['other'] + ' WHERE deliveryId = ' + rowData2['deliveryId'] + ';');
+                    tx.executeSql('UPDATE TDelivery SET mon = ' + rowData2.mon + ', wed = ' + rowData2.wed + ', fri = ' + rowData2.fri + ', other = ' + rowData2.other + ' WHERE deliveryId = ' + rowData2.deliveryId + ';');
                   }
                 }
               }, 
@@ -429,7 +474,7 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
                     // alert(JSON.stringify(rowData.products[i2]));
                     var rowData2 = rowData.products[i2];
                     // alert('INSERT INTO TDelivery(clientId, productId, deliveryStDate, mon, wed, fri, other) VALUES (' + rowData2['clientId'] + ', ' + rowData2['productId'] + ', "' + rowData2['deliveryStDate'] + '", ' + rowData2['mon'] + ', ' + rowData2['wed'] + ', ' + rowData2['fri'] + ', ' + rowData2['other'] + ')');
-                    tx.executeSql('INSERT INTO TDelivery(clientId, productId, deliveryStDate, mon, wed, fri, other) VALUES (' + rowData2['clientId'] + ', ' + rowData2['productId'] + ', "' + rowData2['deliveryStDate'] + '", ' + rowData2['mon'] + ', ' + rowData2['wed'] + ', ' + rowData2['fri'] + ', ' + rowData2['other'] + ')');
+                    tx.executeSql('INSERT INTO TDelivery(clientId, productId, deliveryStDate, mon, wed, fri, other) VALUES (' + rowData2.clientId + ', ' + rowData2.productId + ', "' + rowData2.deliveryStDate + '", ' + rowData2.mon + ', ' + rowData2.wed + ', ' + rowData2.fri + ', ' + rowData2.other + ')');
                   }
                 }
               }, 
