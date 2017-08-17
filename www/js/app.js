@@ -378,7 +378,7 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
     };
 
     // 顧客データのInsert
-    $scope.insertClient = function() {
+    $scope.dialogDispAddClient = function() {
       ons.createDialog('clientAddDialog.html', {
         parentScope: $scope
       }).then(function(clientAddDialog) {
@@ -387,7 +387,7 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
     };
 
     // 顧客データのUpdate
-    $scope.updateClient = function() {
+    $scope.dialogDispUpdClient = function() {
       ons.createDialog('clientUpdDialog.html', {
         parentScope: $scope
       }).then(function(clientUpdDialog) {
@@ -396,22 +396,91 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
     };
 
     // 商品データのInsert
-    $scope.insertProduct = function() {
+    $scope.dialogDispAddProduct = function() {
       ons.createDialog('productAddDialog.html', {
         parentScope: $scope
       }).then(function(productAddDialog) {
+        $scope._productName = "";
         productAddDialog.show();
+      });
+    };
+    
+    $scope.insertProduct = function(_productName) {
+      // alert(_productId + "/" + _productName);
+      insertProductDatabase(_productName).then(selectProductDatabase()).then(selectDeliveryDatabase());
+      productAddDialog.hide();
+    };
+
+    // Product Database for insert
+    var insertProductDatabase = function(_productName){
+      return new Promise(function(resolve, reject) {
+        // タイムアウト値の設定は任意
+        setTimeout(function(){
+          console.log('Start insertProductDatabase');
+          var db = window.openDatabase("Database", "1.0", "TestDatabase", 200000);
+            db.transaction(
+              function(tx){
+                // alert(_productId + "/" + _productName);
+                // alert('UPDATE MProduct SET productName = "' + _productName + '" WHERE productId = ' + _productId + ';');
+                tx.executeSql('INSERT INTO MProduct(productName) VALUES ("' + _productName + '")');
+              }, 
+              function(){
+                // 失敗時
+                // alert("6- insert fail");
+              }, 
+              function(){
+                // 成功時
+                // alert("6- insert success");
+          resolve();
+              }
+          );
+          console.log('End insertProductDatabase');
+        },100);
       });
     };
 
     // 商品データのUpdate
-    $scope.updateProduct = function(_productId, _productName) {
+    $scope.dialogDispUpdProduct = function(_productId, _productName) {
       ons.createDialog('productUpdDialog.html', {
         parentScope: $scope
       }).then(function(productUpdDialog) {
         $scope._productName = _productName;
         $scope._productId = _productId;
         productUpdDialog.show();
+      });
+    };
+    
+    $scope.updateProduct = function(_productId, _productName) {
+      // alert(_productId + "/" + _productName);
+      updateProductDatabase(_productId, _productName).then(selectProductDatabase()).then(selectDeliveryDatabase());
+      productUpdDialog.hide();
+    };
+
+    // Product Database for update
+    var updateProductDatabase = function(_productId, _productName){
+      return new Promise(function(resolve, reject) {
+        // タイムアウト値の設定は任意
+        setTimeout(function(){
+          console.log('Start updateProductDatabase');
+          var db = window.openDatabase("Database", "1.0", "TestDatabase", 200000);
+            db.transaction(
+              function(tx){
+                // alert(_productId + "/" + _productName);
+                // alert('UPDATE MProduct SET productName = "' + _productName + '" WHERE productId = ' + _productId + ';');
+                tx.executeSql('UPDATE MProduct SET productName = "' + _productName + '" WHERE productId = ' + _productId + ';');
+              }, 
+              function(){
+                // 失敗時
+                // alert("7- update fail");
+              }, 
+              function(){
+                // 成功時
+                // alert("7- update success");
+          resolve();
+              }
+          );
+          console.log('End updateProductDatabase');
+        },100);
       });
     };
 

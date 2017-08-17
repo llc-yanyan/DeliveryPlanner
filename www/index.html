@@ -61,16 +61,15 @@
       　  <ons-input id="groupName" modifier="underbar" placeholder="エリア" ng-model="" type="text"></ons-input>
           <ons-input id="clientName" modifier="underbar" placeholder="名前" ng-model="" type="text"></ons-input>
 
-          <ons-select id="productList">
-            <option value="basic">みるくで元気</option>
-            <option value="material">明治牛乳</option>
+          <ons-select ng-repeat="product3 in select.products">
+            <option ng-model="{{product3.productId}}">{{product3.productName}}</option>
           </ons-select>
 
-          <ons-input id="mon" modifier="underbar" placeholder="月曜" ng-model="" type="text"></ons-input>
-          <ons-input id="wed" modifier="underbar" placeholder="水曜" ng-model="" type="text"></ons-input>
-          <ons-input id="fri" modifier="underbar" placeholder="金曜" ng-model="" type="text"></ons-input>
-          <ons-input id="other" modifier="underbar" placeholder="他" ng-model="" type="text"></ons-input>
-          <ons-button ng-click="insertClient()">登録</ons-button>
+          <ons-input id="mon" modifier="underbar" placeholder="月曜" ng-model="" type="number"></ons-input>
+          <ons-input id="wed" modifier="underbar" placeholder="水曜" ng-model="" type="number"></ons-input>
+          <ons-input id="fri" modifier="underbar" placeholder="金曜" ng-model="" type="number"></ons-input>
+          <ons-input id="other" modifier="underbar" placeholder="他" ng-model="" type="number"></ons-input>
+          <ons-button ng-click="">登録</ons-button>
         </div>
       </ons-dialog>
     </ons-template>
@@ -81,8 +80,8 @@
           <div class="center">商品の追加</div>
         </ons-toolbar>
         <div style="padding: 10px;">
-    　     <ons-input id="productName" modifier="underbar" placeholder="商品名" ng-model="_productName" type="text"></ons-input>
-          <ons-button ng-click="insertProduct()">登録</ons-button>
+    　     <ons-input modifier="underbar" placeholder="商品名" ng-model="_productName" type="text"></ons-input>
+          <ons-button ng-click="insertProduct(_productName)">登録</ons-button>
         </div>
       </ons-dialog>
     </ons-template>
@@ -93,8 +92,8 @@
           <div class="center">商品名の変更</div>
         </ons-toolbar>
         <div style="padding: 10px;">
-    　     <ons-input id="productName" modifier="underbar" ng-model="_productName" type="text"></ons-input>
-          <ons-button ng-click="">変更</ons-button>
+    　     <ons-input modifier="underbar" ng-model="_productName" type="text"></ons-input>
+          <ons-button ng-click="updateProduct(_productId, _productName)">変更</ons-button>
         </div>
       </ons-dialog>
     </ons-template>
@@ -158,7 +157,7 @@
             </td>
           </tr>
         </table>
-        <ons-button ng-click="insertClient()">追加</ons-button>
+        <ons-button ng-click="dialogDispAddClient()">追加</ons-button>
       </div>
     </ons-page>
   </ons-template>
@@ -174,7 +173,6 @@
           <ons-col></ons-col>
         </ons-row>
         <hr/>
-
         <table ng-table="vm.tableParams" class="table" show-filter="true" width="100%">
           <tr>
             <th width="45%" style="background-color: #eeeeee;">商品</th>
@@ -185,7 +183,7 @@
           </tr>
           <tr ng-repeat="product in productList">
             <td title="'Name'" class="productName" style="background-color: #f0f7ff;">
-              <ons-button modifier="quiet" ng-click="updateProduct(product.productId, product.productName)">{{product.productName}}</ons-button></td>
+              <ons-button modifier="quiet" ng-click="dialogDispUpdProduct(product.productId, product.productName)">{{product.productName}}</ons-button></td>
             <td title="'Mon'" class="weekdayName monday">
               {{product.mon}}
               </td>
@@ -200,7 +198,7 @@
               </td>
           </tr>
         </table>
-        <ons-button ng-click="insertProduct()">追加</ons-button>
+        <ons-button ng-click="dialogDispAddProduct()">追加</ons-button>
 
       </div>
     </ons-page>
