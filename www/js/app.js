@@ -11,7 +11,7 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
     $scope.updateBtnHide = true;
     $scope.copyBtnHide = true;
     $scope.maxClientId = 0;
-    var debug = 0;
+    var debug = 1;
     
     // 開始日の算出
     today = new Date();
@@ -30,7 +30,8 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
             // タイムアウト値の設定は任意
             setTimeout(function(){
                 console.log('Start createDatabase');
-                var db = window.openDatabase("Database", "1.0", "TestDatabase", 200000);
+                var db = window.openDatabase("Database", "1.0", "TestDatabase", 2048);
+                // var db = window.openDatabase("Database", "1.0", "TestDatabase", 200000);
                 if(db.version == "" || debug == 1){
                     // alert("1- create db version:" + db.version);
                     console.log('not exist db');
@@ -81,7 +82,8 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
             setTimeout(function(){
                 console.log('Start selectDatabase');
                 $scope.insertBtnHide = true;
-                var db = window.openDatabase("Database","1.0","TestDatabase",200000);
+                var db = window.openDatabase("Database","1.0","TestDatabase",2048);
+                // var db = window.openDatabase("Database","1.0","TestDatabase",200000);
                 // alert("2- db version:" + db.version);
                 db.transaction(
                     function(tx){
@@ -181,7 +183,8 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
         return new Promise(function(resolve, reject){
             setTimeout(function(){
                 console.log('Start selectDatabase');
-                var db = window.openDatabase("Database","1.0","TestDatabase",200000);
+                var db = window.openDatabase("Database","1.0","TestDatabase",2048);
+                // var db = window.openDatabase("Database","1.0","TestDatabase",200000);
                 // alert("3- db version:" + db.version);
                 db.transaction(
                     function(tx){
@@ -242,7 +245,8 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
         return new Promise(function(resolve, reject){
             setTimeout(function(){
                 console.log('Start selectDatabase');
-                var db = window.openDatabase("Database","1.0","TestDatabase",200000);
+                var db = window.openDatabase("Database","1.0","TestDatabase",2048);
+                // var db = window.openDatabase("Database","1.0","TestDatabase",200000);
                 // alert("3- db version:" + db.version);
                 db.transaction(
                     function(tx){
@@ -299,7 +303,8 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
         return new Promise(function(resolve, reject){
             setTimeout(function(){
                 console.log('Start getMaxClientId');
-                var db = window.openDatabase("Database","1.0","TestDatabase",200000);
+                var db = window.openDatabase("Database","1.0","TestDatabase",2048);
+                // var db = window.openDatabase("Database","1.0","TestDatabase",200000);
                 // alert("12- db version:" + db.version);
                 db.transaction(
                     function(tx){
@@ -337,7 +342,8 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
         return new Promise(function(resolve, reject){
             setTimeout(function(){
                 console.log('Start copyDatabase');
-                var db = window.openDatabase("Database","1.0","TestDatabase",200000);
+                var db = window.openDatabase("Database","1.0","TestDatabase",2048);
+                // var db = window.openDatabase("Database","1.0","TestDatabase",200000);
                 // alert("5- db version:" + db.version);
                 db.transaction(
                     function(tx){
@@ -417,11 +423,11 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
         });
     };
     
-    if(debug == 0) {
-      selectProductDatabase().then(selectDeliveryDatabase());
-    }else{
+    // if(debug == 0) {
+      // selectProductDatabase().then(selectDeliveryDatabase());
+    // }else{
       createDatabase().then(selectProductDatabase).then(selectDeliveryDatabase());
-    }
+    // }
     
     $scope.prevWeek = function() {
       // 開始日の算出
@@ -581,7 +587,8 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
         // タイムアウト値の設定は任意
         setTimeout(function(){
           console.log('Start insertClientDatabase');
-          var db = window.openDatabase("Database", "1.0", "TestDatabase", 200000);
+          var db = window.openDatabase("Database", "1.0", "TestDatabase", 2048);
+          // var db = window.openDatabase("Database", "1.0", "TestDatabase", 200000);
             db.transaction(
               function(tx){
                 // alert('INSERT INTO MClient(clientId, categoryName, clientName) VALUES (' + $scope.maxClientId + ',"' + _categoryName + '", "' + _clientName + '")');
@@ -608,7 +615,8 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
         // タイムアウト値の設定は任意
         setTimeout(function(){
           console.log('Start updateClientDatabase');
-          var db = window.openDatabase("Database", "1.0", "TestDatabase", 200000);
+          var db = window.openDatabase("Database", "1.0", "TestDatabase", 2048);
+          // var db = window.openDatabase("Database", "1.0", "TestDatabase", 200000);
             db.transaction(
               function(tx){
                 // alert(_clientId + "/" + _categoryName + "/" + _clientName);
@@ -636,7 +644,8 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
         // タイムアウト値の設定は任意
         setTimeout(function(){
           console.log('Start insertProductDatabase');
-          var db = window.openDatabase("Database", "1.0", "TestDatabase", 200000);
+          var db = window.openDatabase("Database", "1.0", "TestDatabase", 2048);
+          // var db = window.openDatabase("Database", "1.0", "TestDatabase", 200000);
             db.transaction(
               function(tx){
                 // alert(_productId + "/" + _productName);
@@ -681,7 +690,8 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
         // タイムアウト値の設定は任意
         setTimeout(function(){
           console.log('Start updateProductDatabase');
-          var db = window.openDatabase("Database", "1.0", "TestDatabase", 200000);
+          var db = window.openDatabase("Database", "1.0", "TestDatabase", 2048);
+          // var db = window.openDatabase("Database", "1.0", "TestDatabase", 200000);
             db.transaction(
               function(tx){
                 // alert(_productId + "/" + _productName);
@@ -709,7 +719,8 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
         // タイムアウト値の設定は任意
         setTimeout(function(){
           console.log('Start updateDeliveryDatabase');
-          var db = window.openDatabase("Database", "1.0", "TestDatabase", 200000);
+          var db = window.openDatabase("Database", "1.0", "TestDatabase", 2048);
+          // var db = window.openDatabase("Database", "1.0", "TestDatabase", 200000);
             db.transaction(
               function(tx){
 
@@ -748,7 +759,8 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
         // タイムアウト値の設定は任意
         setTimeout(function(){
           console.log('Start insertDeliveryDatabase');
-          var db = window.openDatabase("Database", "1.0", "TestDatabase", 200000);
+          var db = window.openDatabase("Database", "1.0", "TestDatabase", 2048);
+          // var db = window.openDatabase("Database", "1.0", "TestDatabase", 200000);
             db.transaction(
               function(tx){
 
@@ -787,7 +799,8 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
         // タイムアウト値の設定は任意
         setTimeout(function(){
           console.log('Start insertProductForClientDatabase');
-          var db = window.openDatabase("Database", "1.0", "TestDatabase", 200000);
+          var db = window.openDatabase("Database", "1.0", "TestDatabase", 2048);
+          // var db = window.openDatabase("Database", "1.0", "TestDatabase", 200000);
             db.transaction(
               function(tx){
                 // alert($scope.maxClientId);
@@ -816,7 +829,8 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
         // タイムアウト値の設定は任意
         setTimeout(function(){
           console.log('Start deleteDatabase');
-          var db = window.openDatabase("Database", "1.0", "TestDatabase", 200000);
+          var db = window.openDatabase("Database", "1.0", "TestDatabase", 2048);
+          // var db = window.openDatabase("Database", "1.0", "TestDatabase", 200000);
             db.transaction(
               function(tx){
                 var sqlString = '';
