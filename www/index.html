@@ -58,18 +58,37 @@
       <ons-dialog var="clientAddDialog" cancelable mask-color="rgba(0, 0, 0, 0.5)">
         <div style="padding: 10px;">
           <h4>配達先の追加</h4>
-      　  <ons-input id="groupName" modifier="underbar" placeholder="エリア" ng-model="" type="text"></ons-input>
-          <ons-input id="clientName" modifier="underbar" placeholder="名前" ng-model="" type="text"></ons-input>
+      　   <ons-input ng-model="_categoryName" modifier="underbar" placeholder="エリア" type="text"></ons-input>
+          <ons-input ng-model="_clientName" modifier="underbar" placeholder="名前" type="text"></ons-input>
+          <ons-button ng-click="insertClient(_categoryName, _clientName)">登録</ons-button>
+        </div>
+      </ons-dialog>
+    </ons-template>
 
-          <ons-select ng-repeat="product3 in select.products">
-            <option ng-model="{{product3.productId}}">{{product3.productName}}</option>
-          </ons-select>
+    <ons-template id="clientUpdDialog.html">
+      <ons-dialog var="clientUpdDialog" cancelable mask-color="rgba(0, 0, 0, 0.5)">
+        <div style="padding: 10px;">
+          <h4>配達名の変更</h4>
+      　   <ons-input ng-model="_categoryName" modifier="underbar" placeholder="エリア" type="text"></ons-input>
+          <ons-input ng-model="_clientName" modifier="underbar" placeholder="名前" type="text"></ons-input>
+          <ons-button ng-click="updateClient(_categoryName, _clientName)">変更</ons-button>
+        </div>
+      </ons-dialog>
+    </ons-template>
 
-          <ons-input id="mon" modifier="underbar" placeholder="月曜" ng-model="" type="number"></ons-input>
-          <ons-input id="wed" modifier="underbar" placeholder="水曜" ng-model="" type="number"></ons-input>
-          <ons-input id="fri" modifier="underbar" placeholder="金曜" ng-model="" type="number"></ons-input>
-          <ons-input id="other" modifier="underbar" placeholder="他" ng-model="" type="number"></ons-input>
-          <ons-button ng-click="">登録</ons-button>
+    <ons-template id="clientProductAddDialog.html">
+      <ons-dialog var="clientProductAddDialog" cancelable mask-color="rgba(0, 0, 0, 0.5)">
+        <div style="padding: 10px;">
+          <h4>配達商品の追加</h4>
+          <select ng-model="_productId" ng-options="product3.productId as product3.productName for product3 in getProductList">
+            <option value="product3.productId">製品を選択してください{{product3.productName}}</option>
+          </select>
+
+          <ons-input ng-model="_mon" modifier="underbar" placeholder="月曜" type="number"></ons-input>
+          <ons-input ng-model="_wed" modifier="underbar" placeholder="水曜" type="number"></ons-input>
+          <ons-input ng-model="_fri" modifier="underbar" placeholder="金曜" type="number"></ons-input>
+          <ons-input ng-model="_other" modifier="underbar" placeholder="他" type="number"></ons-input>
+          <ons-button ng-click="insertClientProduct(_productId, _mon, _wed, _fri, _other)">登録</ons-button>
         </div>
       </ons-dialog>
     </ons-template>
@@ -123,7 +142,7 @@
                     {{delivery.categoryName}}</td>
               	</tr>
                 <tr>
-                  <td title="'ClientName'" class="clientName" width="50%">
+                  <td title="'ClientName'" class="clientName" width="50%" ng-click="dialogDispUpdClient(delivery.clientId, delivery.categoryName, delivery.clientName)">
                     {{delivery.clientName}}</td>
               	</tr>
               </table>
@@ -157,7 +176,7 @@
             </td>
           </tr>
         </table>
-        <ons-button ng-click="dialogDispAddClient()">追加</ons-button>
+        <ons-button ng-click="dialogDispAddClient()">配達先追加</ons-button>
       </div>
     </ons-page>
   </ons-template>
