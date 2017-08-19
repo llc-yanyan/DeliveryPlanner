@@ -10,7 +10,8 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
     $scope.insertBtnHide = true;
     $scope.updateBtnHide = true;
     $scope.copyBtnHide = true;
-    var debug = 0;
+    $scope.maxClientId = 0;
+    var debug = 1;
     
     // 開始日の算出
     today = new Date();
@@ -79,12 +80,14 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
         return new Promise(function(resolve, reject){
             setTimeout(function(){
                 console.log('Start selectDatabase');
+                $scope.insertBtnHide = true;
                 var db = window.openDatabase("Database","1.0","TestDatabase",200000);
                 // alert("2- db version:" + db.version);
                 db.transaction(
                     function(tx){
                         // alert("dd");
-                        tx.executeSql('SELECT m1.categoryName as categoryName, m1.clientName as clientName, m1.clientId as clientId, m2.productName as productName, m2.productId as productId, t.deliveryId as deliveryId, t.deliveryStDate as deliveryStDate, t.mon as mon, t.wed as wed, t.fri as fri, t.other as other FROM MClient m1 LEFT JOIN (SELECT * FROM TDelivery WHERE deliveryStDate = "' + $scope.weekDaySt + '" and deleteFlg = 0) t ON m1.clientId = t.clientId and t.deleteFlg = 0 LEFT JOIN MProduct m2 ON m2.productId = t.productId and m2.deleteFlg = 0', [], querySuccess, errorCB);
+                        // tx.executeSql('SELECT m1.categoryName as categoryName, m1.clientName as clientName, m1.clientId as clientId, m2.productName as productName, m2.productId as productId, t.deliveryId as deliveryId, t.deliveryStDate as deliveryStDate, t.mon as mon, t.wed as wed, t.fri as fri, t.other as other FROM MClient m1 LEFT JOIN (SELECT * FROM TDelivery WHERE deliveryStDate = "' + $scope.weekDaySt + '" and deleteFlg = 0) t ON m1.clientId = t.clientId and t.deleteFlg = 0 LEFT JOIN MProduct m2 ON m2.productId = t.productId and m2.deleteFlg = 0', [], querySuccess, errorCB);
+                        tx.executeSql('SELECT m1.categoryName as categoryName, m1.clientName as clientName, m1.clientId as clientId, m2.productName as productName, m2.productId as productId, t.deliveryId as deliveryId, t.deliveryStDate as deliveryStDate, t.mon as mon, t.wed as wed, t.fri as fri, t.other as other FROM (SELECT * FROM TDelivery WHERE deliveryStDate = "' + $scope.weekDaySt + '" and deleteFlg = 0) t LEFT JOIN MClient m1 ON m1.clientId = t.clientId and m1.deleteFlg = 0 LEFT JOIN MProduct m2 ON m2.productId = t.productId and m2.deleteFlg = 0', [], querySuccess, errorCB);
                     },
                     function(){
                         // alert("2- select fail");
@@ -145,7 +148,8 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
                 }
                 $scope.deliveryList = deliveryArray;
 
-                if (len > 0 && deliveryCount == 0) {
+                // if (len > 0 && deliveryCount == 0) {
+                if (len == 0) {
                   $scope.updateBtnHide = true;
                   if (today >= new Date()) {
                     $scope.copyBtnHide = false;
@@ -286,6 +290,44 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
             
             var errorCB = function(err) {
                 console.log("Error occured while executing SQL: "+err.code);
+            };
+        });
+    };
+    
+    // ClientID最大値取得(Client)
+    var getMaxClientId = function(){
+        return new Promise(function(resolve, reject){
+            setTimeout(function(){
+                console.log('Start getMaxClientId');
+                var db = window.openDatabase("Database","1.0","TestDatabase",200000);
+                // alert("12- db version:" + db.version);
+                db.transaction(
+                    function(tx){
+                        // alert("dd");
+                        tx.executeSql('SELECT MAX(clientId) as maxClientId FROM MClient', [], querySuccess, errorCB);
+                    }, 
+                    function(){
+                        // alert("12- select fail");
+                        // 失敗時
+                    },
+                    function(){
+                        // alert("12- select success");
+                        // 成功時
+                    }
+                );
+                console.log('End getDatabase');
+            },100);
+            
+            var querySuccess = function(tx,results){
+                // alert("12- query success");
+                $scope.maxClientId = results.rows.item(0).maxClientId + 1;
+                $scope.$apply($scope.maxClientId); // ★
+                // alert($scope.maxClientId);
+                resolve();
+            };
+            
+            var errorCB = function(err) {
+                // console.log("Error occured while executing SQL: "+err.code);
             };
         });
     };
@@ -450,14 +492,15 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
         $scope._clientId = "";
         $scope._categoryName = "";
         $scope._clientName = "";
+        getProductDatabase();
         clientAddDialog.show();
       });
     };
 
     // 配達先データのInsert
-    $scope.insertClient = function(_categoryName, _clientName) {
+    $scope.insertClient = function(_categoryName, _clientName, _productId, _mon, _wed, _fri, _other) {
       // alert(_categoryName);
-      insertClientDatabase(_categoryName, _clientName).then(selectDeliveryDatabase());
+      getMaxClientId().then(insertClientDatabase(_categoryName, _clientName)).then(insertProductForClientDatabase($scope.maxClientId, _productId, _mon, _wed, _fri, _other)).then(selectProductDatabase()).then(selectDeliveryDatabase());
       clientAddDialog.hide();
     };
 
@@ -541,9 +584,8 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
           var db = window.openDatabase("Database", "1.0", "TestDatabase", 200000);
             db.transaction(
               function(tx){
-                // alert(_categoryName + "/" + _clientName);
-                // alert('UPDATE MProduct SET productName = "' + _productName + '" WHERE productId = ' + _productId + ';');
-                tx.executeSql('INSERT INTO MClient(categoryName, clientName) VALUES ("' + _categoryName + '", "' + _clientName + '")');
+                // alert('INSERT INTO MClient(clientId, categoryName, clientName) VALUES (' + $scope.maxClientId + ',"' + _categoryName + '", "' + _clientName + '")');
+                tx.executeSql('INSERT INTO MClient(clientId, categoryName, clientName) VALUES (' + $scope.maxClientId + ',"' + _categoryName + '", "' + _clientName + '")');
               }, 
               function(){
                 // 失敗時
@@ -748,6 +790,8 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
           var db = window.openDatabase("Database", "1.0", "TestDatabase", 200000);
             db.transaction(
               function(tx){
+                // alert($scope.maxClientId);
+                _clientId = $scope.maxClientId;
                 // alert('INSERT INTO TDelivery(clientId, productId, deliveryStDate, mon, wed, fri, other) VALUES (' + _clientId + ', ' + _productId + ', "' + $scope.weekDaySt + '", ' + _mon + ', ' + _wed + ', ' + _fri + ', ' + _other + ')');
                 tx.executeSql('INSERT INTO TDelivery(clientId, productId, deliveryStDate, mon, wed, fri, other) VALUES (' + _clientId + ', ' + _productId + ', "' + $scope.weekDaySt + '", ' + _mon + ', ' + _wed + ', ' + _fri + ', ' + _other + ')');
               }, 

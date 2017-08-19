@@ -11,11 +11,6 @@ app.value('initService', {
         "categoryName": "",
         "clientName": "柳井紀子",
       },
-      {
-        "clientId": 3,
-        "categoryName": "やし",
-        "clientName": "星井ひろみ",
-      },
       ],
       //
       init_product : [
