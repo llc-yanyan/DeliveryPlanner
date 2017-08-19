@@ -85,7 +85,7 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
                     function(tx){
                         // alert("dd");
                         tx.executeSql('SELECT m1.categoryName as categoryName, m1.clientName as clientName, m1.clientId as clientId, m2.productName as productName, m2.productId as productId, t.deliveryId as deliveryId, t.deliveryStDate as deliveryStDate, t.mon as mon, t.wed as wed, t.fri as fri, t.other as other FROM MClient m1 LEFT JOIN (SELECT * FROM TDelivery WHERE deliveryStDate = "' + $scope.weekDaySt + '" and deleteFlg = 0) t ON m1.clientId = t.clientId and t.deleteFlg = 0 LEFT JOIN MProduct m2 ON m2.productId = t.productId and m2.deleteFlg = 0', [], querySuccess, errorCB);
-                    }, 
+                    },
                     function(){
                         // alert("2- select fail");
                         // 失敗時
@@ -481,6 +481,24 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
       clientUpdDialog.hide();
     };
 
+    // 配達先の商品データのInsert
+    $scope.dialogDispAddProductForClient = function(_clientId) {
+      ons.createDialog('clientProductAddDialog.html', {
+        parentScope: $scope
+      }).then(function(clientProductAddDialog) {
+        // alert(_categoryName);
+        $scope._clientId = _clientId;
+        getProductDatabase();
+        clientProductAddDialog.show();
+      });
+    };
+    
+    $scope.insertProductForClient = function(_clientId, _productId, _mon, _wed, _fri, _other) {
+      // alert(_clientId + "/" + _productId + "/" + _other);
+      insertProductForClientDatabase(_clientId, _productId, _mon, _wed, _fri, _other).then(selectProductDatabase()).then(selectDeliveryDatabase());
+      clientProductAddDialog.hide();
+    };
+
     // 商品データのInsert
     $scope.dialogDispAddProduct = function() {
       ons.createDialog('productAddDialog.html', {
@@ -495,6 +513,23 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
       // alert(_productId + "/" + _productName);
       insertProductDatabase(_productName).then(selectProductDatabase()).then(selectDeliveryDatabase());
       productAddDialog.hide();
+    };
+
+    // 配達先商品データのDelete
+    $scope.dialogDispDelProductForClient = function(_deliveryId) {
+      ons.createDialog('clientProductDelDialog.html', {
+        parentScope: $scope
+      }).then(function(clientProductDelDialog) {
+        // alert(_deliveryId);
+        $scope._deliveryId = _deliveryId;
+        clientProductDelDialog.show();
+      });
+    };
+
+    $scope.deleteData = function(_type, _key) {
+      // alert(_type + "/" + _key);
+      deleteDatabase(_type, _key).then(selectProductDatabase()).then(selectDeliveryDatabase());
+      clientProductDelDialog.hide();
     };
 
     // Client Database for insert
@@ -534,7 +569,7 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
           var db = window.openDatabase("Database", "1.0", "TestDatabase", 200000);
             db.transaction(
               function(tx){
-                // alert(_categoryName + "/" + _clientName);
+                // alert(_clientId + "/" + _categoryName + "/" + _clientName);
                 // alert('UPDATE MProduct SET productName = "' + _productName + '" WHERE productId = ' + _productId + ';');
                 tx.executeSql('UPDATE MClient SET categoryName = "' + _categoryName + '", clientName = "' + _clientName + '" WHERE clientId = ' + _clientId + ';');
               }, 
@@ -699,6 +734,72 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
               }
           );
           console.log('End createDatabase');
+          resolve();
+        },100);
+      });
+    };
+
+    // Client Product Database for insert
+    var insertProductForClientDatabase = function(_clientId, _productId, _mon, _wed, _fri, _other){
+      return new Promise(function(resolve, reject) {
+        // タイムアウト値の設定は任意
+        setTimeout(function(){
+          console.log('Start insertProductForClientDatabase');
+          var db = window.openDatabase("Database", "1.0", "TestDatabase", 200000);
+            db.transaction(
+              function(tx){
+                // alert('INSERT INTO TDelivery(clientId, productId, deliveryStDate, mon, wed, fri, other) VALUES (' + _clientId + ', ' + _productId + ', "' + $scope.weekDaySt + '", ' + _mon + ', ' + _wed + ', ' + _fri + ', ' + _other + ')');
+                tx.executeSql('INSERT INTO TDelivery(clientId, productId, deliveryStDate, mon, wed, fri, other) VALUES (' + _clientId + ', ' + _productId + ', "' + $scope.weekDaySt + '", ' + _mon + ', ' + _wed + ', ' + _fri + ', ' + _other + ')');
+              }, 
+              function(){
+                // 失敗時
+                // alert("10- create fail");
+              }, 
+              function(){
+                // 成功時
+                // alert("10- create success");
+              }
+          );
+          console.log('End insertProductForClientDatabase');
+          resolve();
+        },100);
+      });
+    };
+
+    // All Type Database for delete
+    var deleteDatabase = function(_type, _key){
+      return new Promise(function(resolve, reject) {
+        // タイムアウト値の設定は任意
+        setTimeout(function(){
+          console.log('Start deleteDatabase');
+          var db = window.openDatabase("Database", "1.0", "TestDatabase", 200000);
+            db.transaction(
+              function(tx){
+                var sqlString = '';
+                switch (_type) {
+                  case 1: // MProduct
+                    sqlString = 'UPDATE MProduct SET deleteFlg = 1 WHERE productId = ' + _key;
+                    break;
+                  case 2: // MClient
+                    sqlString = 'UPDATE MClient SET deleteFlg = 1 WHERE clientId = ' + _key;
+                    break;
+                  case 3: // TDelivery
+                    sqlString = 'UPDATE TDelivery SET deleteFlg = 1 WHERE deliveryId = ' + _key;
+                    break;
+                }
+                // alert(sqlString);
+                tx.executeSql(sqlString);
+              }, 
+              function(){
+                // 失敗時
+                // alert("11- create fail");
+              }, 
+              function(){
+                // 成功時
+                // alert("11- create success");
+              }
+          );
+          console.log('End deleteDatabase');
           resolve();
         },100);
       });

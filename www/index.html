@@ -71,7 +71,7 @@
           <h4>配達名の変更</h4>
       　   <ons-input ng-model="_categoryName" modifier="underbar" placeholder="エリア" type="text"></ons-input>
           <ons-input ng-model="_clientName" modifier="underbar" placeholder="名前" type="text"></ons-input>
-          <ons-button ng-click="updateClient(_categoryName, _clientName)">変更</ons-button>
+          <ons-button ng-click="updateClient(_clientId, _categoryName, _clientName)">変更</ons-button>
         </div>
       </ons-dialog>
     </ons-template>
@@ -88,7 +88,7 @@
           <ons-input ng-model="_wed" modifier="underbar" placeholder="水曜" type="number"></ons-input>
           <ons-input ng-model="_fri" modifier="underbar" placeholder="金曜" type="number"></ons-input>
           <ons-input ng-model="_other" modifier="underbar" placeholder="他" type="number"></ons-input>
-          <ons-button ng-click="insertClientProduct(_productId, _mon, _wed, _fri, _other)">登録</ons-button>
+          <ons-button ng-click="insertProductForClient(_clientId, _productId, _mon, _wed, _fri, _other)">登録</ons-button>
         </div>
       </ons-dialog>
     </ons-template>
@@ -113,6 +113,17 @@
         <div style="padding: 10px;">
     　     <ons-input modifier="underbar" ng-model="_productName" type="text"></ons-input>
           <ons-button ng-click="updateProduct(_productId, _productName)">変更</ons-button>
+        </div>
+      </ons-dialog>
+    </ons-template>
+
+    <ons-template id="clientProductDelDialog.html">
+      <ons-dialog var="clientProductDelDialog" cancelable mask-color="rgba(0, 0, 0, 0.5)">
+        <ons-toolbar inline>
+          <div class="center">配達商品の削除</div>
+        </ons-toolbar>
+        <div style="padding: 10px;">
+          <ons-button ng-click="deleteData(3, _deliveryId)">削除</ons-button>
         </div>
       </ons-dialog>
     </ons-template>
@@ -150,7 +161,7 @@
             <td width="85%">
               <table class="table" width="100%">
                 <tr>
-                  <th width="52%" style="background-color: #eeeeee;">商品</th>
+                  <th width="52%" style="background-color: #eeeeee;" ng-click="dialogDispAddProductForClient(delivery.clientId)">商品</th>
                   <th width="12%" style="background-color: #eeeeee;">月曜</th>
                   <th width="12%" style="background-color: #eeeeee;">水曜</th>
                   <th width="12%" style="background-color: #eeeeee;">金曜</th>
@@ -158,7 +169,7 @@
                 </tr>
                 <tr ng-repeat="product2 in delivery.products">
                   <td title="'ProductName'" class="productName" style="background-color: #f0f7ff;">
-                    {{product2.productName}}</td>
+                    <div  ng-click="dialogDispDelProductForClient(product2.deliveryId)">{{product2.productName}}</div></td>
                   <td title="'Mon'" class="weekdayName monday">
                     <ons-input id="mon" modifier="underbar" float ng-model="product2.mon" type="number" min=0 max=99></ons-input>
                     </td>
@@ -201,20 +212,16 @@
             <th width="10%" style="background-color: #eeeeee;">他</th>
           </tr>
           <tr ng-repeat="product in productList">
-            <td title="'Name'" class="productName" style="background-color: #f0f7ff;">
-              <ons-button modifier="quiet" ng-click="dialogDispUpdProduct(product.productId, product.productName)">{{product.productName}}</ons-button></td>
+            <td title="'Name'" class="productName" style="background-color: #f0f7ff;" ng-click="dialogDispUpdProduct(product.productId, product.productName)">
+              {{product.productName}}</td>
             <td title="'Mon'" class="weekdayName monday">
-              {{product.mon}}
-              </td>
+              {{product.mon}}</td>
             <td title="'Wed'" class="weekdayName wednesday">
-              {{product.wed}}
-              </td>
+              {{product.wed}}</td>
             <td title="'Fri'" class="weekdayName thursday">
-              {{product.fri}}
-              </td>
+              {{product.fri}}</td>
             <td title="'Other'" class="weekdayName other">
-              {{product.other}}
-              </td>
+              {{product.other}}</td>
           </tr>
         </table>
         <ons-button ng-click="dialogDispAddProduct()">追加</ons-button>
