@@ -145,7 +145,7 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
                 }
                 $scope.deliveryList = deliveryArray;
 
-                if (deliveryCount == 0 || len == 0) {
+                if (len > 0 && deliveryCount == 0) {
                   $scope.updateBtnHide = true;
                   if (today >= new Date()) {
                     $scope.copyBtnHide = false;
@@ -156,7 +156,6 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
                   $scope.updateBtnHide = false;
                   $scope.copyBtnHide = true;
                 }
-                alert(deliveryCount);
 
                 // scopeの更新と反映
                 $scope.$apply($scope.deliveryList); // ★
@@ -425,6 +424,25 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
     };
 
     // 配達先データのInsert
+    $scope.insert = function() {
+      insertDeliveryDatabase().then(selectProductDatabase()).then(selectDeliveryDatabase());
+      $scope.insertBtnHide = true;
+      $scope.insertAlert();
+    };
+
+    // 配達先データのInsert後、Dialog
+    $scope.insertAlert = function() {
+      ons.notification.alert({
+          title: "追加",
+          messageHTML : '完了',
+          buttonLabel : 'OK',
+          animation : 'default',
+          callback : function() {
+          }
+      });  
+    };
+    
+    // 顧客データのInsert
     $scope.dialogDispAddClient = function() {
       ons.createDialog('clientAddDialog.html', {
         parentScope: $scope
