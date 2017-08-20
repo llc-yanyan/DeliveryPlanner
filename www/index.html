@@ -56,8 +56,10 @@
 
     <ons-template id="clientAddDialog.html">
       <ons-dialog var="clientAddDialog" cancelable mask-color="rgba(0, 0, 0, 0.5)">
+        <ons-toolbar inline>
+          <div class="center">配達先の追加</div>
+        </ons-toolbar>
         <div style="padding: 10px;">
-          <h4>配達先の追加</h4>
       　   <ons-input ng-model="_categoryName" modifier="underbar" placeholder="エリア" type="text"></ons-input>
           <ons-input ng-model="_clientName" modifier="underbar" placeholder="名前" type="text"></ons-input>
 
@@ -79,8 +81,10 @@
 
     <ons-template id="clientUpdDialog.html">
       <ons-dialog var="clientUpdDialog" cancelable mask-color="rgba(0, 0, 0, 0.5)">
+        <ons-toolbar inline>
+          <div class="center">配達名の変更</div>
+        </ons-toolbar>
         <div style="padding: 10px;">
-          <h4>配達名の変更</h4>
       　   <ons-input ng-model="_categoryName" modifier="underbar" placeholder="エリア" type="text"></ons-input>
           <ons-input ng-model="_clientName" modifier="underbar" placeholder="名前" type="text"></ons-input>
           <ons-button ng-click="updateClient(_clientId, _categoryName, _clientName)">変更</ons-button>
@@ -90,9 +94,10 @@
 
     <ons-template id="clientProductAddDialog.html">
       <ons-dialog var="clientProductAddDialog" cancelable mask-color="rgba(0, 0, 0, 0.5)">
+        <ons-toolbar inline>
+          <div class="center">配達商品の追加</div>
+        </ons-toolbar>
         <div style="padding: 10px;">
-          <h4>配達商品の追加</h4>
-
           <ons-select ng-model="_productId">
             <option value="">製品を選択してください</option>
             <option ng-repeat="product3 in getProductList" value="{{product3.productId}}">
@@ -148,13 +153,17 @@
     <ons-page>
       <div class="content" style="text-align: center">
         <h2>配達先別</h2>
-        <ons-row>
-          <ons-col></ons-col>
-          <ons-col width="60%"><ons-button modifier="quiet" ng-click="prevWeek()">&lt;</ons-button>({{weekDaySt}}〜{{weekDayEd}})<ons-button modifier="quiet" ng-click="nextWeek()">&gt;</ons-button></ons-col>
+        <ons-row class="txtLarge">
           <ons-col>
-            <ons-button ng-click="insert()" ng-hide="insertBtnHide">追加</ons-button>
-            <ons-button ng-click="update()" ng-hide="updateBtnHide">更新</ons-button>
-            <ons-button ng-click="copy()" ng-hide="copyBtnHide">コピー</ons-button>
+            <ons-button class="btnLarge" ng-click="today()" ng-hide="todayBtnHide">今日</ons-button>
+          </ons-col>
+          <ons-col><ons-button modifier="large" class="btnLarge" ng-click="prevWeek()">&lt;</ons-button></ons-col>
+          <ons-col width="25%" class="txtLarge">{{weekDaySt}}<br/>〜<br/>{{weekDayEd}}</ons-col>
+          <ons-col><ons-button modifier="large" class="btnLarge" ng-click="nextWeek()">&gt;</ons-button></ons-col>
+          <ons-col>
+            <ons-button class="btnLarge" ng-click="insert()" ng-hide="insertBtnHide">追加</ons-button>
+            <ons-button class="btnLarge" ng-click="update()" ng-hide="updateBtnHide">更新</ons-button>
+            <ons-button class="btnLarge" ng-click="copy()" ng-hide="copyBtnHide">コピー</ons-button>
           </ons-col>
         </ons-row>
         <hr/>
@@ -202,7 +211,7 @@
             </td>
           </tr>
         </table>
-        <ons-button ng-click="dialogDispAddClient()">配達先追加</ons-button>
+        <ons-button class="btnLarge" ng-click="dialogDispAddClient()">配達先追加</ons-button>
       </div>
     </ons-page>
   </ons-template>
@@ -212,9 +221,11 @@
 
       <div class="content" style="text-align: center">
         <h2>商品別</h2>
-        <ons-row>
+        <ons-row class="txtLarge">
           <ons-col></ons-col>
-          <ons-col width="60%"><ons-button modifier="quiet" ng-click="prevWeek()">&lt;</ons-button>({{weekDaySt}}〜{{weekDayEd}})<ons-button modifier="quiet" ng-click="nextWeek()">&gt;</ons-button></ons-col>
+          <ons-col><ons-button class="btnLarge" modifier="large" ng-click="prevWeek()">&lt;</ons-button></ons-col>
+          <ons-col width="25%" class="txtLarge">{{weekDaySt}}<br/>〜<br/>{{weekDayEd}}</ons-col>
+          <ons-col><ons-button class="btnLarge" modifier="large" ng-click="nextWeek()">&gt;</ons-button></ons-col>
           <ons-col></ons-col>
         </ons-row>
         <hr/>
@@ -239,7 +250,7 @@
               {{product.other}}</td>
           </tr>
         </table>
-        <ons-button ng-click="dialogDispAddProduct()">追加</ons-button>
+        <ons-button class="btnLarge" ng-click="dialogDispAddProduct()">追加</ons-button>
 
       </div>
     </ons-page>

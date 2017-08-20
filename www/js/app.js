@@ -10,8 +10,9 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
     $scope.insertBtnHide = true;
     $scope.updateBtnHide = true;
     $scope.copyBtnHide = true;
+    $scope.todayBtnHide = true;
     $scope.maxClientId = 0;
-    var debug = 1;
+    var debug = 0;
     
     // 開始日の算出
     today = new Date();
@@ -423,13 +424,27 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
         });
     };
     
-    // if(debug == 0) {
-      // selectProductDatabase().then(selectDeliveryDatabase());
-    // }else{
-      createDatabase().then(selectProductDatabase).then(selectDeliveryDatabase());
-    // }
+    createDatabase().then(selectProductDatabase).then(selectDeliveryDatabase());
+    
+    $scope.today = function() {
+      $scope.todayBtnHide = true;
+      // 開始日の算出
+      today = new Date();
+      if(today.getDay() == 0){ // 日曜日対応
+        today.setDate(today.getDate() - 6);
+      }else{
+        today.setDate(today.getDate() - (today.getDay() - 1));
+      }
+      // alert(today.getDate());
+      $scope.weekDaySt = formatDate(calcStWeekDate(today));
+      $scope.weekDayEd = formatDate(calcEdWeekDate(today));
+    
+      // データの再取得
+      selectProductDatabase().then(selectDeliveryDatabase());
+    };
     
     $scope.prevWeek = function() {
+      $scope.todayBtnHide = false;
       // 開始日の算出
       today.setDate(today.getDate() - 7);
       // alert(today.getDate());
@@ -441,6 +456,7 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
     };
     
     $scope.nextWeek = function() {
+      $scope.todayBtnHide = false;
       // 開始日の算出
       today.setDate(today.getDate() + 7);
       // alert(today.getDate());

@@ -1,2 +1,10 @@
 /**/
+.txtLarge {
+  font-size: 26px;
+  vertical-align:middle;
+  }
 
+.btnLarge {
+  font-size: 20px;
+  padding: 10pt;
+  }
