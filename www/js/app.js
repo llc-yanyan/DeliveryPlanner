@@ -12,7 +12,7 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
     $scope.copyBtnHide = true;
     $scope.todayBtnHide = true;
     $scope.maxClientId = 0;
-    var debug = 1;
+    var debug = 0;
     
     // 開始日の算出
     today = new Date();
