@@ -23,3 +23,9 @@ app.factory("formatDate", function(){
     return _date.getFullYear() +  "-" + (_date.getMonth() + 1) + "-" + _date.getDate();
   };
 });
+
+app.factory("dbVals", function(){
+  return {
+    version: "1.1"
+  };
+});
