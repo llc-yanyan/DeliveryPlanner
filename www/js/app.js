@@ -373,7 +373,7 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
         });
     };
     
-    var db = window.openDatabase("Database", '', "TestDatabase", 1024);
+    var db = window.openDatabase("Database", '', "TestDatabase", 2048);
     if(db.version != dbVer || debug == 1){
       // alert("1- create db version:" + db.version + "/dbVer:" + dbVer);
       db.changeVersion(db.version, dbVer,
