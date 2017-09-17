@@ -12,7 +12,7 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
     $scope.copyBtnHide = true;
     $scope.todayBtnHide = true;
     $scope.maxClientId = 0;
-    var dbVer = "1.0.1";
+    var dbVer = "1.0.0";
     var debug = 0;
     
     // 開始日の算出
@@ -25,56 +25,6 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
     
     $scope.weekDaySt = formatDate(calcStWeekDate(today));
     $scope.weekDayEd = formatDate(calcEdWeekDate(today));
-    
-    // // DB生成
-    // var createDatabase = function(){
-    //     return new Promise(function(resolve, reject) {
-    //         // タイムアウト値の設定は任意
-    //         setTimeout(function(){
-    //             console.log('Start createDatabase');
-    //             alert("11");
-    //             var db = window.openDatabase("Database", dbVer, "TestDatabase", 2048);
-    //             console.log('not exist db');
-    //             // DB無いので作ります
-    //             db.transaction(
-    //                 function(tx){
-    //                     // 初期データの作成(client)
-    //                     tx.executeSql('DROP TABLE IF EXISTS MClient');
-    //                     tx.executeSql('CREATE TABLE IF NOT EXISTS MClient (clientId INTEGER PRIMARY KEY AUTOINCREMENT, categoryName text, clientName text, deleteFlg integer not null default 0)');
-    //                     for (i = 0; i < initService.init_client.length; i++) {
-    //                         tx.executeSql('INSERT INTO MClient VALUES (' + initService.init_client[i].clientId + ', "' + initService.init_client[i].categoryName + '", "' + initService.init_client[i].clientName + '", 0)');
-    //                     }
-    //                   alert("1");
-    //                     // 初期データの作成(products)
-    //                     tx.executeSql('DROP TABLE IF EXISTS MProduct');
-    //                     tx.executeSql('CREATE TABLE IF NOT EXISTS MProduct (productId INTEGER PRIMARY KEY AUTOINCREMENT, productName text, deleteFlg integer not null default 0)');
-    //                     for (i = 0; i < initService.init_product.length; i++) {
-    //                         tx.executeSql('INSERT INTO MProduct VALUES (' + initService.init_product[i].productId + ', "' + initService.init_product[i].productName + '", 0)');
-    //                     }
-    //                   alert("2");
-    //                     // 初期データの作成(delivery)
-    //                     tx.executeSql('DROP TABLE IF EXISTS TDelivery');
-    //                     tx.executeSql('CREATE TABLE IF NOT EXISTS TDelivery (deliveryId INTEGER PRIMARY KEY AUTOINCREMENT, clientId integer, productId integer, deliveryStDate text, mon integer, wed integer, fri integer, other integer, deleteFlg integer not null default 0)');
-    //                     for (i = 0; i < initService.init_delivery.length; i++) {
-    //                         tx.executeSql('INSERT INTO TDelivery VALUES (' + (i + 1) + ', ' + initService.init_delivery[i].clientId + ', ' + initService.init_delivery[i].productId + ', "' + initService.init_delivery[i].deliveryStDate + '", ' + initService.init_delivery[i].mon + ', ' + initService.init_delivery[i].wed + ', ' + initService.init_delivery[i].fri + ', ' + initService.init_delivery[i].other + ', 0)');
-    //                     }
-    //                   // alert("3");
-    //                 }, 
-    //                 function(err){
-    //                   // 失敗時
-    //                   alert("1- create fail");
-    //                   alert(err);
-    //                 }, 
-    //                 function(){
-    //                   // 成功時
-    //                   alert("1- create success");
-    //                   resolve();
-    //                 }
-    //             );
-    //             console.log('End createDatabase');
-    //         },100);
-    //     });
-    // };
 
     // 検索(Delivery)
     var selectDeliveryDatabase = function(){
@@ -423,38 +373,43 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
         });
     };
     
-    var db = window.openDatabase("Database", '', "TestDatabase", 2048);
+    var db = window.openDatabase("Database", '', "TestDatabase", 1024);
     if(db.version != dbVer || debug == 1){
       // alert("1- create db version:" + db.version + "/dbVer:" + dbVer);
-      db.changeVersion(db.version, dbVer, migration, function(){}, function(){});
-      // createDatabase().then(selectProductDatabase).then(selectDeliveryDatabase());
-      selectProductDatabase().then(selectDeliveryDatabase());
+      db.changeVersion(db.version, dbVer,
+        function(tx) {
+          // 初期データの作成(client)
+          tx.executeSql('DROP TABLE IF EXISTS MClient');
+          tx.executeSql('CREATE TABLE IF NOT EXISTS MClient (clientId INTEGER PRIMARY KEY AUTOINCREMENT, categoryName text, clientName text, deleteFlg integer not null default 0)');
+          for (i = 0; i < initService.init_client.length; i++) {
+              tx.executeSql('INSERT INTO MClient VALUES (' + initService.init_client[i].clientId + ', "' + initService.init_client[i].categoryName + '", "' + initService.init_client[i].clientName + '", 0)');
+          }
+          // alert("-1");
+          // 初期データの作成(products)
+          tx.executeSql('DROP TABLE IF EXISTS MProduct');
+          tx.executeSql('CREATE TABLE IF NOT EXISTS MProduct (productId INTEGER PRIMARY KEY AUTOINCREMENT, productName text, deleteFlg integer not null default 0)');
+          for (i = 0; i < initService.init_product.length; i++) {
+              tx.executeSql('INSERT INTO MProduct VALUES (' + initService.init_product[i].productId + ', "' + initService.init_product[i].productName + '", 0)');
+          }
+          // alert("-2");
+          // 初期データの作成(delivery)
+          tx.executeSql('DROP TABLE IF EXISTS TDelivery');
+          tx.executeSql('CREATE TABLE IF NOT EXISTS TDelivery (deliveryId INTEGER PRIMARY KEY AUTOINCREMENT, clientId integer, productId integer, deliveryStDate text, mon integer, wed integer, fri integer, other integer, deleteFlg integer not null default 0)');
+          for (i = 0; i < initService.init_delivery.length; i++) {
+              tx.executeSql('INSERT INTO TDelivery VALUES (' + (i + 1) + ', ' + initService.init_delivery[i].clientId + ', ' + initService.init_delivery[i].productId + ', "' + initService.init_delivery[i].deliveryStDate + '", ' + initService.init_delivery[i].mon + ', ' + initService.init_delivery[i].wed + ', ' + initService.init_delivery[i].fri + ', ' + initService.init_delivery[i].other + ', 0)');
+          }
+          // alert("-3");
+        },
+        function(){
+          // alert("failer.");
+        },
+        function(){
+          selectProductDatabase().then(selectDeliveryDatabase());
+          // alert("success.");
+        });
     }else{
-      // alert("2- create db version:" + db.version + "/dbVer:" + dbVer);
+      // alert("2- exist db version:" + db.version + "/dbVer:" + dbVer);
       selectProductDatabase().then(selectDeliveryDatabase());
-    }
-    
-    var migration = function(tx) {
-      // 初期データの作成(client)
-      tx.executeSql('DROP TABLE IF EXISTS MClient');
-      tx.executeSql('CREATE TABLE IF NOT EXISTS MClient (clientId INTEGER PRIMARY KEY AUTOINCREMENT, categoryName text, clientName text, deleteFlg integer not null default 0)');
-      for (i = 0; i < initService.init_client.length; i++) {
-          tx.executeSql('INSERT INTO MClient VALUES (' + initService.init_client[i].clientId + ', "' + initService.init_client[i].categoryName + '", "' + initService.init_client[i].clientName + '", 0)');
-      }
-      alert("1");
-      // 初期データの作成(products)
-      tx.executeSql('DROP TABLE IF EXISTS MProduct');
-      tx.executeSql('CREATE TABLE IF NOT EXISTS MProduct (productId INTEGER PRIMARY KEY AUTOINCREMENT, productName text, deleteFlg integer not null default 0)');
-      for (i = 0; i < initService.init_product.length; i++) {
-          tx.executeSql('INSERT INTO MProduct VALUES (' + initService.init_product[i].productId + ', "' + initService.init_product[i].productName + '", 0)');
-      }
-      alert("2");
-      // 初期データの作成(delivery)
-      tx.executeSql('DROP TABLE IF EXISTS TDelivery');
-      tx.executeSql('CREATE TABLE IF NOT EXISTS TDelivery (deliveryId INTEGER PRIMARY KEY AUTOINCREMENT, clientId integer, productId integer, deliveryStDate text, mon integer, wed integer, fri integer, other integer, deleteFlg integer not null default 0)');
-      for (i = 0; i < initService.init_delivery.length; i++) {
-          tx.executeSql('INSERT INTO TDelivery VALUES (' + (i + 1) + ', ' + initService.init_delivery[i].clientId + ', ' + initService.init_delivery[i].productId + ', "' + initService.init_delivery[i].deliveryStDate + '", ' + initService.init_delivery[i].mon + ', ' + initService.init_delivery[i].wed + ', ' + initService.init_delivery[i].fri + ', ' + initService.init_delivery[i].other + ', 0)');
-      }
     }
     
     $scope.today = function() {
