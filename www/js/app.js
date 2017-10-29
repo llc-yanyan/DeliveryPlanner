@@ -12,7 +12,7 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
     $scope.copyBtnHide = true;
     $scope.todayBtnHide = true;
     $scope.maxClientId = 0;
-    var dbVer = "1.0.5";
+    var dbVer = "1.0.6";
     var debug = 0;
     
     // 開始日の算出
@@ -69,13 +69,14 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
                 var productArray = [];
                 var rowData = {};
                 for (var i = 0; i < len; i++) {
-                  // alert(results.rows.item(i).categoryName + "/" + results.rows.item(i).clientName + "/" + results.rows.item(i).productName + "/" + results.rows.item(i).deliveryId + "/" + results.rows.item(i).mon + "/" + results.rows.item(i).wed + "/" + results.rows.item(i).fri);
+                  // alert(results.rows.item(i).categoryName + "/" + results.rows.item(i).clientName + "/" + results.rows.item(i).productName + "/" + results.rows.item(i).deliveryId + "/" + results.rows.item(i).mon + "/" + results.rows.item(i).wed + "/" + results.rows.item(i).fri + "/" + results.rows.item(i).orderNum);
                   fflg = _clientId == results.rows.item(i).clientId ? true : false;
                   if (!fflg) {
                     rowData = {};
                     rowData.categoryName = results.rows.item(i).categoryName;
                     rowData.clientName = results.rows.item(i).clientName;
                     rowData.clientId = results.rows.item(i).clientId;
+                    rowData.orderNum = results.rows.item(i).orderNum;
                     productArray = [];
                   }
                   var rowProductData = {};
@@ -300,7 +301,7 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
                         tmpDate = new Date($scope.weekDaySt);
                         tmpDate.setDate(tmpDate.getDate() - 7);
                         // alert(tmpDate);
-                        tx.executeSql('SELECT m1.categoryName as categoryName, m1.clientName as clientName, m1.clientId as clientId, m2.productName as productName, m2.productId as productId, t.deliveryId as deliveryId, t.deliveryStDate as deliveryStDate, t.mon as mon, t.wed as wed, t.fri as fri, t.other as other FROM (SELECT * FROM TDelivery WHERE deliveryStDate = "' + formatDate(tmpDate) + '" and deleteFlg = 0) t LEFT JOIN MClient m1 ON m1.clientId = t.clientId and m1.deleteFlg = 0 LEFT JOIN MProduct m2 ON m2.productId = t.productId and m2.deleteFlg = 0', [], querySuccess, errorCB);
+                        tx.executeSql('SELECT m1.categoryName as categoryName, m1.clientName as clientName, m1.clientId as clientId, m1.orderNum as orderNum, m2.productName as productName, m2.productId as productId, t.deliveryId as deliveryId, t.deliveryStDate as deliveryStDate, t.mon as mon, t.wed as wed, t.fri as fri, t.other as other FROM (SELECT * FROM TDelivery WHERE deliveryStDate = "' + formatDate(tmpDate) + '" and deleteFlg = 0) t LEFT JOIN MClient m1 ON m1.clientId = t.clientId and m1.deleteFlg = 0 LEFT JOIN MProduct m2 ON m2.productId = t.productId and m2.deleteFlg = 0 order by m1.orderNum, m1.clientId, m2.productId', [], querySuccess, errorCB);
                     }, 
                     function(){
                         // alert("5- select fail");
@@ -414,14 +415,14 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
     
     // Order Down
     $scope.orderDown = function(_clientId, _orderNum){
-      alert('down' + _orderNum);
-      changeOrder(_clientId, _orderNum, 1);
+      // alert('down' + _clientId + '/' + _orderNum);
+      changeOrder(_clientId, _orderNum, 1).then(selectDeliveryDatabase());
     };
 
     // Order Up
     $scope.orderUp = function(_clientId, _orderNum){
-      alert('up' + _orderNum);
-      changeOrder(_clientId, _orderNum, -1);
+      // alert('up' + _clientId + '/' + _orderNum);
+      changeOrder(_clientId, _orderNum, -1).then(selectDeliveryDatabase());
     };
 
     // Order Change
@@ -433,10 +434,12 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
           var db = window.openDatabase("Database", dbVer, "TestDatabase", 2048);
             db.transaction(
               function(tx){
-//                tx.executeSql('UPDATE MClient SET orderNum = orderNum + ' + _orderType + ' WHERE clientId = ' + _clientId);
-//                tx.executeSql('UPDATE MClient SET orderNum = orderNum + ' + _orderType + ' WHERE orderNum = ' + _orderNum + ' and clientId <> ' + _clientId);
-                alert('UPDATE MClient SET orderNum = orderNum + ' + _orderType + ' WHERE clientId = ' + _clientId);
-                alert('UPDATE MClient SET orderNum = orderNum + ' + _orderType + ' WHERE orderNum = ' + _orderNum + ' and clientId <> ' + _clientId);
+                tx.executeSql('UPDATE MClient SET orderNum = orderNum + ' + _orderType + ' WHERE clientId = ' + _clientId);
+                tx.executeSql('UPDATE MClient SET orderNum = orderNum + ' + _orderType + ' * -1 WHERE orderNum = ' + _orderNum + ' and clientId <> ' + _clientId);
+                // alert('UPDATE MClient SET orderNum = orderNum + ' + _orderType + ' WHERE clientId = ' + _clientId);
+                // alert('UPDATE MClient SET orderNum = orderNum + ' + _orderType + ' * -1 WHERE orderNum = ' + _orderNum + ' and clientId <> ' + _clientId);
+                // alert(_clientId + ':' + _orderNum + '/' + (_orderNum + _orderType));
+                // alert(_clientId + ':' + _orderNum + '/' + (_orderNum + (_orderType * -1)));
               }, 
               function(){
                 // 失敗時
