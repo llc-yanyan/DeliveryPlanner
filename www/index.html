@@ -8,6 +8,8 @@
   <script src="lib/angular/angular.min.js"></script>
   <script src="lib/onsenui/js/onsenui.min.js"></script>
   <script src="lib/onsenui/js/angular-onsenui.min.js"></script>
+  <script src="lib/jquery-3.1.1.min.js"></script>
+  <script src="lib/jquery-ui.min.js"></script>
   <script src="js/app.js"></script>
   <script src="js/service/delivery.js"></script>
   <script src="js/default/initsql.js"></script>
@@ -15,6 +17,7 @@
   <link rel="stylesheet" href="components/loader.css">
   <link rel="stylesheet" href="lib/onsenui/css/onsenui.css">
   <link rel="stylesheet" href="lib/onsenui/css/onsen-css-components.css">
+  <link rel="stylesheet" href="lib/jquery-ui.min.css">
   <link rel="stylesheet" href="css/style.css">
 
   <style>
@@ -39,8 +42,15 @@
     ons.bootstrap(['myApp'])
     ons.ready(function() {
         console.log("Onsen UI is ready!");
+//     $("#sortable").sortable();
     });
-</script>
+    $(function() {
+      $("#sortable").sortable();
+    });
+//    $(document).ready(function() {
+//      $("#sortable > tbody").sortable();
+//    }
+  </script>
 </head>
 <body>
   <ons-page ng-controller="AppController">
@@ -167,9 +177,18 @@
           </ons-col>
         </ons-row>
         <hr/>
-
+<!--
+          <ul id="sortable">
+              <li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>項目 1</li>
+              <li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>項目 2</li>
+              <li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>項目 3</li>
+          </ul>
+-->
         <table ng-table="vm.tableParams" class="table" show-filter="true" width="100%">
-          <tr ng-repeat="delivery in deliveryList">
+          <thead>
+          </thead>
+          <tbody id="sortable">
+          <tr ng-repeat="delivery in deliveryList" style="background-color: white;">
             <td width="15%">
               <table style="background-color: #fff7f0;" width="100%">
                 <tr>
@@ -195,21 +214,23 @@
                   <td title="'ProductName'" class="productName" style="background-color: #f0f7ff;">
                     <div  ng-click="dialogDispDelProductForClient(product2.deliveryId)">{{product2.productName}}</div></td>
                   <td title="'Mon'" class="weekdayName monday">
-                    <ons-input id="mon" modifier="underbar" float ng-model="product2.mon" type="number" min=0 max=99></ons-input>
+                    <ons-input id="mon" modifier="underbar" float ng-model="product2.mon" type="number" min="0" max="99"></ons-input>
                     </td>
                   <td title="'Wed'" class="weekdayName wednesday">
-                    <ons-input id="wed" modifier="underbar" float ng-model="product2.wed" type="number" min=0 max=99></ons-input>
+                    <ons-input id="wed" modifier="underbar" float ng-model="product2.wed" type="number" min="0" max="99"></ons-input>
                     </td>
                   <td title="'Fri'" class="weekdayName thursday">
-                    <ons-input id="fri" modifier="underbar" float ng-model="product2.fri" type="number" min=0 max=99></ons-input>
+                    <ons-input id="fri" modifier="underbar" float ng-model="product2.fri" type="number" min="0" max="99"></ons-input>
                     </td>
                   <td title="'Other'" class="weekdayName other">
-                    <ons-input id="other" modifier="underbar" float ng-model="product2.other" type="number" min=0 max=99></ons-input>
+                    <ons-input id="other" modifier="underbar" float ng-model="product2.other" type="number" min="0" max="99"></ons-input>
                     </td>
                 </tr>
               </table>
+              <ons-button class="btn" ng-click="orderDown(delivery.clientId, delivery.orderNum)">▼</ons-button>&nbsp;&nbsp;<ons-button class="btn" ng-click="orderUp(delivery.clientId, delivery.orderNum)">▲</ons-button>
             </td>
           </tr>
+          </tbody>
         </table>
         <ons-button class="btnLarge" ng-click="dialogDispAddClient()">配達先追加</ons-button>
       </div>
