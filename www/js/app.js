@@ -12,7 +12,7 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
     $scope.copyBtnHide = true;
     $scope.todayBtnHide = true;
     $scope.maxClientId = 0;
-    var dbVer = "1.0.6";
+    var dbVer = "1.0.8";
     var debug = 0;
     
     // 開始日の算出
@@ -116,7 +116,7 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
 
                 // scopeの更新と反映
                 $scope.$apply($scope.deliveryList); // ★
-                // alert("query success");
+//                alert("query success");
                 console.log('End query');
                 // alert(JSON.stringify($scope.deliveryList));
                 resolve();
@@ -385,6 +385,7 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
           for (i = 0; i < initService.init_client.length; i++) {
               tx.executeSql('INSERT INTO MClient VALUES (' + initService.init_client[i].clientId + ', "' + initService.init_client[i].categoryName + '", "' + initService.init_client[i].clientName + '",' + initService.init_client[i].clientId + ', 0)');
           }
+//          tx.executeSql('CREATE INDEX indexOrderNum on MClient(orderNum);');
           // alert("-1");
           // 初期データの作成(products)
           tx.executeSql('DROP TABLE IF EXISTS MProduct');
@@ -399,6 +400,11 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
           for (i = 0; i < initService.init_delivery.length; i++) {
               tx.executeSql('INSERT INTO TDelivery VALUES (' + (i + 1) + ', ' + initService.init_delivery[i].clientId + ', ' + initService.init_delivery[i].productId + ', "' + initService.init_delivery[i].deliveryStDate + '", ' + initService.init_delivery[i].mon + ', ' + initService.init_delivery[i].wed + ', ' + initService.init_delivery[i].fri + ', ' + initService.init_delivery[i].other + ', 0)');
           }
+//          tx.executeSql('CREATE INDEX indexStdate on TDelivery(deliveryStDate);');
+//          tx.executeSql('CREATE INDEX indexClientId on TDelivery(clientId);');
+//          tx.executeSql('CREATE INDEX indexProductId on TDelivery(productId);');
+          tx.executeSql('CREATE INDEX indexProductId on TDelivery(productId);');
+          tx.executeSql('CREATE INDEX indexTdeliveryd on TDelivery(productId, clientId, deliveryStDate);');
           // alert("-3");
         },
         function(){
@@ -443,10 +449,12 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
               }, 
               function(){
                 // 失敗時
-              }, 
+//                alert("fail");
+              },
               function(){
                 // 成功時
                 resolve();
+//                alert("success");
               }
           );
           console.log('End changeOrder');
