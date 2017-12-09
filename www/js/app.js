@@ -12,7 +12,7 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
     $scope.copyBtnHide = true;
     $scope.todayBtnHide = true;
     $scope.maxClientId = 0;
-    var dbVer = "1.0.9";
+    var dbVer = "1.0.10";
     var debug = 0;
     
     // 開始日の算出
@@ -643,7 +643,7 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
             db.transaction(
               function(tx){
                 // alert('INSERT INTO MClient(clientId, categoryName, clientName) VALUES (' + $scope.maxClientId + ',"' + _categoryName + '", "' + _clientName + '")');
-                tx.executeSql('INSERT INTO MClient(clientId, categoryName, clientName) VALUES (' + $scope.maxClientId + ',"' + _categoryName + '", "' + _clientName + '")');
+                tx.executeSql('INSERT INTO MClient(clientId, categoryName, clientName, orderNum) VALUES (' + $scope.maxClientId + ',"' + _categoryName + '", "' + _clientName + '", ' + $scope.maxClientId + ')');
               }, 
               function(){
                 // 失敗時

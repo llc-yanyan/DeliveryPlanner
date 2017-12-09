@@ -1481,5 +1481,14 @@ app.value('initService', {
         "fri": 3,
         "other": 0,
       },
+      {
+        "clientId": 81,
+        "productId": 4,
+        "deliveryStDate": "2017-12-4",
+        "mon": 2,
+        "wed": 2,
+        "fri": 3,
+        "other": 0,
+      },
       ]
 });
