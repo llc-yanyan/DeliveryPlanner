@@ -83,8 +83,9 @@
           <ons-input ng-model="_wed" modifier="underbar" placeholder="水曜" type="number"></ons-input>
           <ons-input ng-model="_fri" modifier="underbar" placeholder="金曜" type="number"></ons-input>
           <ons-input ng-model="_other" modifier="underbar" placeholder="他" type="number"></ons-input>
+          <ons-input ng-model="_orderNum" type="number" value="{{_orderNum}}"></ons-input>
 
-          <ons-button ng-click="insertClient(_categoryName, _clientName, _productId, _mon, _wed, _fri, _other)">登録</ons-button>
+          <ons-button ng-click="insertClient(_categoryName, _clientName, _productId, _mon, _wed, _fri, _other, _orderNum)">登録</ons-button>
         </div>
       </ons-dialog>
     </ons-template>
@@ -171,8 +172,8 @@
           <ons-col width="25%" class="txtLarge">{{weekDaySt}}<br/>〜<br/>{{weekDayEd}}</ons-col>
           <ons-col><ons-button modifier="large" class="btnLarge" ng-click="nextWeek()">&gt;</ons-button></ons-col>
           <ons-col>
-            <ons-button class="btnLarge" ng-click="insert()" ng-hide="insertBtnHide">追加</ons-button>
-            <ons-button class="btnLarge" ng-click="update()" ng-hide="updateBtnHide">更新</ons-button>
+            <ons-button class="btnLarge" ng-click="insert()" ng-hide="insertBtnHide">決定</ons-button>
+            <ons-button class="btnLarge" ng-click="update()" ng-hide="updateBtnHide">保存</ons-button>
             <ons-button class="btnLarge" ng-click="copy()" ng-hide="copyBtnHide">コピー</ons-button>
           </ons-col>
         </ons-row>
@@ -227,6 +228,10 @@
                     </td>
                 </tr>
               </table>
+              <span ng-if='!$last'>
+              <ons-button class="btn" ng-click="dialogDispAddClient(delivery.orderNum)">追加</ons-button>
+              &nbsp;&nbsp;
+              </span>
               <span ng-if='!$last'>
               <ons-button class="btn" ng-click="orderDown(delivery.clientId, delivery.orderNum)">▼</ons-button>
               </span>
