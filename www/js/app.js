@@ -421,15 +421,22 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
     
     // Order Down
     $scope.orderDown = function(_clientId, _orderNum){
-      alert('down' + _clientId + '/' + _orderNum);
-      changeOrder(_clientId, _orderNum, 1).then(selectDeliveryDatabase());
+      // alert('down' + _clientId + '/' + _orderNum);
+      // changeOrder(_clientId, _orderNum, 1).then(selectDeliveryDatabase());
+      changeOrderArray(_orderNum, _orderNum + 1);
     };
 
     // Order Up
     $scope.orderUp = function(_clientId, _orderNum){
-      alert('up' + _clientId + '/' + _orderNum);
-      changeOrder(_clientId, _orderNum, -1).then(selectDeliveryDatabase());
+      // alert('up' + _clientId + '/' + _orderNum);
+      // changeOrder(_clientId, _orderNum, -1).then(selectDeliveryDatabase());
+      changeOrderArray(_orderNum, _orderNum - 1);
     };
+
+    // Order Change Array
+    var changeOrderArray = function(_orderNum, _orderTo){
+      moveAt($scope.getProductList, _orderNum, _orderTo);
+    }
 
     // Order Change
     var changeOrder = function(_clientId, _orderNum, _orderType){
@@ -578,6 +585,27 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
 
     // 配達先データのInsert
     $scope.insertClient = function(_categoryName, _clientName, _productId, _mon, _wed, _fri, _other, _clientId, _orderNum) {
+
+/**
+      var rowData = {};
+      rowData.clientName = "あああ";
+      rowData.categoryName = "あああ";
+      var rowData2 = {};
+      rowData2.productName = "あああ";
+      rowData2.mon = 123;
+      rowData2.wed = 123;
+      rowData2.fri = 123;
+      rowData2.other = 123;
+//alert("aa1");
+      var rowData3 = [];
+      rowData3.push = rowData2;
+      rowData.products = rowData3;
+
+//alert("aa2");
+      $scope.deliveryList.push = rowData;
+      clientAddDialog.hide();
+//      alert("aa4");
+**/
       if(_orderNum != "") {
         getMaxClientId().then(
           insertClientDatabase(_categoryName, _clientName)
@@ -640,6 +668,7 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
     
     $scope.insertProductForClient = function(_clientId, _productId, _mon, _wed, _fri, _other) {
       insertProductForClientDatabase(_clientId, _productId, _mon, _wed, _fri, _other).then(selectProductDatabase()).then(selectDeliveryDatabase());
+      $scope.getProductList.push = new Object;
       clientProductAddDialog.hide();
     };
 
@@ -912,12 +941,12 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
               }, 
               function(){
                 // 失敗時
-                alert("10- create fail");
+                // alert("10- create fail");
               }, 
               function(){
                 // 成功時
 //                alert("10- create success");
-                alert("10- create success" + $scope.maxClientId + " " + $scope._orderNum);
+                // alert("10- create success" + $scope.maxClientId + " " + $scope._orderNum);
                 changeOrder($scope.maxClientId, $scope._orderNum, -1);
               }
           );
@@ -967,4 +996,28 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
       });
     };
 
+  var moveAt = function(array, index, at) {
+    alert("aa1");
+    if (index === at || index > array.length -1 || at > array.length - 1) {
+      alert("aa7");
+      return array;
+    }
+
+    alert("aa2");
+    var value = array[index];
+    alert("aa2-1 = " + array);
+    var tail = array.slice(index + 1);
+
+    alert("aa3");
+    array.splice(index);
+
+    alert("aa4");
+    Array.prototype.push.apply(array, tail);
+
+    alert("aa5");
+    array.splice(at, 0, value);
+
+    alert("aa6");
+    return array;
+  }
 });
