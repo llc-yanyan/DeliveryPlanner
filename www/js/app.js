@@ -12,7 +12,6 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
     $scope.copyBtnHide = true;
     $scope.todayBtnHide = true;
     $scope.maxClientId = 0;
-    $scope._position = 0;
     var dbVer = "1.0.10";
     var debug = 0;
     
@@ -288,41 +287,6 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
                 // console.log("Error occured while executing SQL: "+err.code);
             };
         });
-    };
-    
-    // 商品名の取得(Product) TBD
-    var getProductName = function(_productId){
-        // return new Promise(function(resolve, reject){
-        //     setTimeout(function(){
-        //         console.log('Start getProductName');
-        //         var db = window.openDatabase("Database",dbVer,"TestDatabase",2048);
-        //         // alert("12- db version:" + db.version);
-        //         // db.transaction(
-        //         //     function(tx){
-        //         //         // alert("dd");
-        //         //         tx.executeSql('SELECT MAX(clientId) as maxClientId FROM MClient', [], querySuccess, errorCB);
-        //         //     }, 
-        //         //     function(){
-        //         //         // alert("12- select fail");
-        //         //         // 失敗時
-        //         //     },
-        //         //     function(){
-        //         //         // alert("12- select success");
-        //         //         // 成功時
-        //         //     }
-        //         // );
-        //         console.log('End getProductName');
-        //     },100);
-        //     
-        //     var querySuccess = function(tx,results){
-        //         resolve("aaa");
-        //     };
-        //     
-        //     var errorCB = function(err) {
-        //         // console.log("Error occured while executing SQL: "+err.code);
-        //     };
-        // });
-        return "aa";
     };
 
     // Copy(Delivery)
@@ -620,13 +584,13 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
 
     // 配達先データのInsert
     $scope.insertClient = function(_categoryName, _clientName, _productId, _mon, _wed, _fri, _other, _clientId, _position) {
-      // alert($scope._position);
       var rowData = {};
       rowData.clientName = _clientName;
       rowData.categoryName = _categoryName;
       var rowData2 = {};
-      rowData2.productId = _productId;
-      rowData2.productName = getProductName(_productId);
+      var product = _productId.split("|");
+      rowData2.productId = product[0];
+      rowData2.productName = product[1];
       rowData2.mon = _mon;
       rowData2.wed = _wed;
       rowData2.fri = _fri;
@@ -639,7 +603,63 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
       }else{
         $scope.deliveryList.splice($scope._position, 0, rowData);
       }
-      // alert($scope.deliveryList);
+      // todo 登録一覧をベースにレコードを再作成
+      new Promise(function(resolve, reject){
+        setTimeout(function(){
+          console.log('Start copyDatabase');
+          var db = window.openDatabase("Database",dbVer,"TestDatabase",2048);
+          db.transaction(
+              function(tx){
+                tx.executeSql('SELECT * FROM MClient order by orderNum', [], querySuccess, errorCB);
+              }, 
+              function(){
+                // alert("5- select fail");
+                // 失敗時
+              },
+              function(){
+                // alert("5- select success");
+                // 成功時
+              }
+          );                    
+          console.log('End selectDatabase');
+        },100);
+        
+        var querySuccess = function(tx,results){
+          // alert("5- query success");
+          var len = results.rows.length;
+          // alert(len);
+          console.log('Start query');
+          
+          // memo 消しちゃだめ。過去データ保持
+          // tx.executeSql('DELETE FROM MClient');
+          // *************************
+          // クエリ成功時の処理をかく
+          // *************************
+          for (var i = 0; i < len; i++) {
+            /**
+             * ロジック
+             *  $scope.deliveryListとMClientをマッチングさせながらInsert&Update
+             */
+//             // alert(results.rows.item(i).categoryName + "/" + results.rows.item(i).clientName + "/" + results.rows.item(i).productName + "/" + results.rows.item(i).mon + "/" + results.rows.item(i).wed + "/" + results.rows.item(i).fri);
+//             fflg = _clientId == results.rows.item(i).clientId ? true : false;
+//             if (!fflg) {
+//               rowData = {};
+//               rowData.categoryName = results.rows.item(i).categoryName;
+//               rowData.clientName = results.rows.item(i).clientName;
+//               productArray = [];
+              tx.executeSql('INSERT INTO MClient VALUES (' + initService.init_client[i].clientId + ', "' + initService.init_client[i].categoryName + '", "' + initService.init_client[i].clientName + '",' + initService.init_client[i].clientId + ', 0)');
+          }
+
+          // alert("5- query success");
+          console.log('End query');
+          // alert(JSON.stringify($scope.deliveryList));
+          resolve();
+        };
+        
+        var errorCB = function(err) {
+          console.log("Error occured while executing SQL: "+err.code);
+        };
+      });
 /**
       // if(_orderNum != "") {
         getMaxClientId().then(

@@ -75,7 +75,7 @@
 
           <ons-select ng-model="_productId">
             <option value="">製品を選択してください</option>
-            <option ng-repeat="product3 in getProductList" value="{{product3.productId}}">
+            <option ng-repeat="product3 in getProductList" value="{{product3.productId}}|{{product3.productName}}">
             {{product3.productName}}</option>
           </ons-select>
 
