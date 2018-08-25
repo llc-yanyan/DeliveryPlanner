@@ -4,7 +4,7 @@ var app = angular.module( 'myApp', ['onsen.directives']);
 app.controller('AppController', function(initService, formatDate, calcStWeekDate, calcEdWeekDate, $scope) {
     $scope.title = "コース別仕訳表";
     $scope.cource = "A6";
-    $scope.productList = {};
+    // $scope.productList = {};
     $scope.getProductList = {};
     $scope.deliveryList = {};
     $scope.insertBtnHide = true;
@@ -12,6 +12,7 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
     $scope.copyBtnHide = true;
     $scope.todayBtnHide = true;
     $scope.maxClientId = 0;
+    $scope._position = 0;
     var dbVer = "1.0.10";
     var debug = 0;
     
@@ -176,10 +177,10 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
                     rowData.other = results.rows.item(i).other;
                     productArray.push(rowData);
                 }
-                 $scope.productList = productArray;
+                var productList = productArray;
 
                 // scopeの更新と反映
-                $scope.$apply($scope.productList);        // ★
+                $scope.$apply(productList);        // ★
                 // alert("query success");
                 console.log('End query');
                 // alert(JSON.stringify($scope.productList));
@@ -287,6 +288,41 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
                 // console.log("Error occured while executing SQL: "+err.code);
             };
         });
+    };
+    
+    // 商品名の取得(Product) TBD
+    var getProductName = function(_productId){
+        // return new Promise(function(resolve, reject){
+        //     setTimeout(function(){
+        //         console.log('Start getProductName');
+        //         var db = window.openDatabase("Database",dbVer,"TestDatabase",2048);
+        //         // alert("12- db version:" + db.version);
+        //         // db.transaction(
+        //         //     function(tx){
+        //         //         // alert("dd");
+        //         //         tx.executeSql('SELECT MAX(clientId) as maxClientId FROM MClient', [], querySuccess, errorCB);
+        //         //     }, 
+        //         //     function(){
+        //         //         // alert("12- select fail");
+        //         //         // 失敗時
+        //         //     },
+        //         //     function(){
+        //         //         // alert("12- select success");
+        //         //         // 成功時
+        //         //     }
+        //         // );
+        //         console.log('End getProductName');
+        //     },100);
+        //     
+        //     var querySuccess = function(tx,results){
+        //         resolve("aaa");
+        //     };
+        //     
+        //     var errorCB = function(err) {
+        //         // console.log("Error occured while executing SQL: "+err.code);
+        //     };
+        // });
+        return "aa";
     };
 
     // Copy(Delivery)
@@ -456,10 +492,10 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
               }, 
               function(){
                 // 失敗時
-                alert("fail");
+                // alert("fail");
               },
               function(){
-                alert("success");
+                // alert("success");
                 // 成功時
                 resolve();
               }
@@ -557,21 +593,20 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
         $scope._clientId = "";
         $scope._categoryName = "";
         $scope._clientName = "";
-        $scope._orderNum = "";
         getProductDatabase();
         clientAddDialog.show();
       });
     };
 
     // 顧客データのInsert(位置指定)
-    $scope.dialogDispAddClient = function(_orderNum) {
+    $scope.dialogDispAddClient = function(_position) {
       ons.createDialog('clientAddDialog.html', {
         parentScope: $scope
       }).then(function(clientAddDialog) {
         $scope._clientId = "";
         $scope._categoryName = "";
         $scope._clientName = "";
-        $scope._orderNum = _orderNum;
+        $scope._position = _position;
         getProductDatabase();
         clientAddDialog.show();
       });
@@ -579,36 +614,36 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
 
     // 配達先データのInsert
     $scope.insertClient = function(_categoryName, _clientName, _productId, _mon, _wed, _fri, _other, _clientId) {
-      getMaxClientId().then(insertClientDatabase(_categoryName, _clientName)).then(insertProductForClientDatabase('', _productId, _mon, _wed, _fri, _other)).then(selectProductDatabase()).then(selectDeliveryDatabase());
+      getMaxClientId().then(insertClientDatabase(_categoryName, _clientName, _orderNum)).then(insertProductForClientDatabase('', _productId, _mon, _wed, _fri, _other)).then(selectProductDatabase()).then(selectDeliveryDatabase());
       clientAddDialog.hide();
     };
 
     // 配達先データのInsert
-    $scope.insertClient = function(_categoryName, _clientName, _productId, _mon, _wed, _fri, _other, _clientId, _orderNum) {
-
-/**
+    $scope.insertClient = function(_categoryName, _clientName, _productId, _mon, _wed, _fri, _other, _clientId, _position) {
+      // alert($scope._position);
       var rowData = {};
-      rowData.clientName = "あああ";
-      rowData.categoryName = "あああ";
+      rowData.clientName = _clientName;
+      rowData.categoryName = _categoryName;
       var rowData2 = {};
-      rowData2.productName = "あああ";
-      rowData2.mon = 123;
-      rowData2.wed = 123;
-      rowData2.fri = 123;
-      rowData2.other = 123;
-//alert("aa1");
-      var rowData3 = [];
+      rowData2.productId = _productId;
+      rowData2.productName = getProductName(_productId);
+      rowData2.mon = _mon;
+      rowData2.wed = _wed;
+      rowData2.fri = _fri;
+      rowData2.other = _other;
+      var rowData3 = {};
       rowData3.push = rowData2;
       rowData.products = rowData3;
-
-//alert("aa2");
-      $scope.deliveryList.push = rowData;
-      clientAddDialog.hide();
-//      alert("aa4");
-**/
-      if(_orderNum != "") {
+      if($scope.deliveryList.length < 1){
+        $scope.deliveryList.push(rowData);
+      }else{
+        $scope.deliveryList.splice($scope._position, 0, rowData);
+      }
+      // alert($scope.deliveryList);
+/**
+      // if(_orderNum != "") {
         getMaxClientId().then(
-          insertClientDatabase(_categoryName, _clientName)
+          insertClientDatabase(_categoryName, _clientName, _orderNum)
         // ).then(
         //   insertProductForClientDatabase('', _productId, _mon, _wed, _fri, _other).then(changeOrder($scope.maxClientId, _orderNum, -1))
         ).then(
@@ -620,17 +655,18 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
         ).then(
           selectDeliveryDatabase()
         );
-      }else{
-        getMaxClientId().then(
-          insertClientDatabase(_categoryName, _clientName)
-        ).then(
-          insertProductForClientDatabase('', _productId, _mon, _wed, _fri, _other)
-        ).then(
-          selectProductDatabase()
-        ).then(
-          selectDeliveryDatabase()
-        );
-      }
+      // }else{
+      //   getMaxClientId().then(
+      //     insertClientDatabase(_categoryName, _clientName)
+      //   ).then(
+      //     insertProductForClientDatabase('', _productId, _mon, _wed, _fri, _other)
+      //   ).then(
+      //     selectProductDatabase()
+      //   ).then(
+      //     selectDeliveryDatabase()
+      //   );
+      // }
+**/
       clientAddDialog.hide();
     };
 
@@ -706,17 +742,23 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
     };
 
     // Client Database for insert
-    var insertClientDatabase = function(_categoryName, _clientName){
+    var insertClientDatabase = function(_categoryName, _clientName, _orderNum){
       return new Promise(function(resolve, reject) {
         // タイムアウト値の設定は任意
         setTimeout(function(){
+          alert('a2');
           console.log('Start insertClientDatabase');
           var db = window.openDatabase("Database", dbVer, "TestDatabase", 2048);
           // var db = window.openDatabase("Database", "1.0", "TestDatabase", 200000);
             db.transaction(
               function(tx){
-                // alert('INSERT INTO MClient(clientId, categoryName, clientName) VALUES (' + $scope.maxClientId + ',"' + _categoryName + '", "' + _clientName + '")');
-                tx.executeSql('INSERT INTO MClient(clientId, categoryName, clientName, orderNum) VALUES (' + $scope.maxClientId + ',"' + _categoryName + '", "' + _clientName + '", ' + $scope.maxClientId + ')');
+                alert('a3');
+                for(var i = 0; i < $scope.getProductList.length; i++){
+                 alert(' - ' + $scope.deliveryList[i].categoryName);
+//                  tx.executeSql('INSERT INTO MClient(clientId, categoryName, clientName, orderNum) VALUES (' + $scope.maxClientId + ',"' + _categoryName + '", "' + _clientName + '", ' + $scope.maxClientId + ')');
+                }
+                alert('INSERT INTO MClient(clientId, categoryName, clientName) VALUES (' + $scope.maxClientId + ',"' + _categoryName + '", "' + _clientName + '")');
+                // tx.executeSql('INSERT INTO MClient(clientId, categoryName, clientName, orderNum) VALUES (' + $scope.maxClientId + ',"' + _categoryName + '", "' + _clientName + '", ' + $scope.maxClientId + ')');
               }, 
               function(){
                 // 失敗時
@@ -947,7 +989,7 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
                 // 成功時
 //                alert("10- create success");
                 // alert("10- create success" + $scope.maxClientId + " " + $scope._orderNum);
-                changeOrder($scope.maxClientId, $scope._orderNum, -1);
+                // changeOrder($scope.maxClientId, $scope._orderNum, -1);
               }
           );
           console.log('End insertProductForClientDatabase');

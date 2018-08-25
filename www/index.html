@@ -83,9 +83,8 @@
           <ons-input ng-model="_wed" modifier="underbar" placeholder="水曜" type="number"></ons-input>
           <ons-input ng-model="_fri" modifier="underbar" placeholder="金曜" type="number"></ons-input>
           <ons-input ng-model="_other" modifier="underbar" placeholder="他" type="number"></ons-input>
-          <ons-input ng-model="_orderNum" type="number" value="{{_orderNum}}"></ons-input>
 
-          <ons-button ng-click="insertClient(_categoryName, _clientName, _productId, _mon, _wed, _fri, _other)">登録</ons-button>
+          <ons-button ng-click="insertClient(_categoryName, _clientName, _productId, _mon, _wed, _fri, _other, position)">登録</ons-button>
         </div>
       </ons-dialog>
     </ons-template>
@@ -203,6 +202,10 @@
               </table>
             </td>
             <td width="85%">
+              <span ng-if='$first'>
+              <ons-button class="btn" ng-click="dialogDispAddClient(0)">追加</ons-button>
+              &nbsp;&nbsp;
+              </span>
               <table class="table" width="100%">
                 <tr>
                   <th width="52%" style="background-color: #eeeeee;" ng-click="dialogDispAddProductForClient(delivery.clientId)">商品</th>
@@ -228,10 +231,8 @@
                     </td>
                 </tr>
               </table>
-              <span ng-if='!$last'>
-              <ons-button class="btn" ng-click="dialogDispAddClient(delivery.orderNum)">追加</ons-button>
+              <ons-button class="btn" ng-click="dialogDispAddClient($index+1)">追加</ons-button>
               &nbsp;&nbsp;
-              </span>
               <span ng-if='!$last'>
               <ons-button class="btn" ng-click="orderDown(delivery.clientId, delivery.orderNum)">▼</ons-button>
               </span>
