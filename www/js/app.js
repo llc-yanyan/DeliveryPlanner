@@ -12,7 +12,7 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
     $scope.copyBtnHide = true;
     $scope.todayBtnHide = true;
     $scope.maxClientId = 0;
-    var dbVer = "1.0.12"; // base 1.0.10
+    var dbVer = "1.0.11"; // base 1.0.10
     var debug = 1;
     
     // 開始日の算出
@@ -53,15 +53,30 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
                           td.wed as wed, \
                           td.fri as fri, \
                           td.other as other \
-                        FROM ( \
-                          SELECT * FROM TClientByDate \
-                          WHERE \
-                            deliveryStDate = "' + $scope.weekDaySt + '" and deleteFlg = 0 \
-                        ) t \
-                        LEFT JOIN MClient m1 ON m1.clientId = t.clientId and m1.deleteFlg = 0 \
-                        LEFT JOIN MDelivery td ON td.clientbydateId = td.clientbydateId and td.deleteFlg = 0 \
+                        FROM (SELECT * FROM TClientByDate WHERE deliveryStDate = "' + $scope.weekDaySt + '" and deleteFlg = 0) t \
+                        LEFT JOIN (SELECT * FROM MClient WHERE deleteFlg = 0) m1 ON t.clientId = m1.clientId \
+                        LEFT JOIN TDelivery td ON td.clientbydateId = t.clientbydateId and td.deleteFlg = 0 \
                         LEFT JOIN MProduct m2 ON m2.productId = td.productId and m2.deleteFlg = 0 \
-                        order by t.orderNum, m1.clientId, m2.productId', [], querySuccess, errorCB);
+                        ORDER BY t.orderNum, m1.clientId, m2.productId', [], querySuccess, errorCB);
+                        // tx.executeSql('\
+                        // SELECT \
+                        //   m1.categoryName as categoryName, \
+                        //   m1.clientName as clientName, \
+                        //   m1.clientId as clientId, \
+                        //   t.orderNum as orderNum, \
+                        //   m2.productName as productName, \
+                        //   m2.productId as productId, \
+                        //   td.deliveryId as deliveryId, \
+                        //   t.deliveryStDate as deliveryStDate, \
+                        //   td.mon as mon, \
+                        //   td.wed as wed, \
+                        //   td.fri as fri, \
+                        //   td.other as other \
+                        // FROM (SELECT * FROM MClient WHERE deleteFlg = 0) m1 \
+                        // LEFT JOIN (SELECT * FROM TClientByDate WHERE deliveryStDate = "' + $scope.weekDaySt + '" and deleteFlg = 0) t ON t.clientId = m1.clientId \
+                        // LEFT JOIN TDelivery td ON td.clientbydateId = t.clientbydateId and td.deleteFlg = 0 \
+                        // LEFT JOIN MProduct m2 ON m2.productId = td.productId and m2.deleteFlg = 0 \
+                        // ORDER BY t.orderNum, m1.clientId, m2.productId', [], querySuccess, errorCB);
                     },
                     function(){
                         alert("2- select fail");
@@ -159,7 +174,7 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
                 console.log('Start selectDatabase');
                 var db = window.openDatabase("Database",dbVer,"TestDatabase",2048);
                 // var db = window.openDatabase("Database","1.0","TestDatabase",200000);
-                // alert("3- db version:" + db.version);
+                alert("3- db version:" + db.version);
                 db.transaction(
                     function(tx){
                         // alert("dd");
@@ -171,12 +186,9 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
                           ifnull(sum(td.wed), 0) as wed, \
                           ifnull(sum(td.fri), 0) as fri, \
                           ifnull(sum(td.other), 0) as other \
-                        FROM \
-                          TClientByDate t \
-                        LEFT JOIN TDelivery td ON td.clientbydateId = t.clientbydateId and t.deleteFlg = 0 \
-                        LEFT JOIN MProduct m ON m.productId = td.productId and deleteFlg = 0 \
-                        WHERE \
-                          t.deliveryStDate = "' + $scope.weekDaySt + '" and t.deleteFlg = 0; \
+                        FROM (SELECT * FROM TClientByDate WHERE deliveryStDate = "' + $scope.weekDaySt + '" and deleteFlg = 0) t \
+                        LEFT JOIN TDelivery td on td.clientbydateId = t.clientbydateId and td.deleteFlg = 0 \
+                        LEFT JOIN MProduct m on m.productId = td.productId and m.deleteFlg = 0 \
                         GROUP BY m.productId', [], querySuccess, errorCB);
                     }, 
                     function(){
@@ -211,12 +223,13 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
                     rowData.fri = results.rows.item(i).fri;
                     rowData.other = results.rows.item(i).other;
                     productArray.push(rowData);
+                    // alert(JSON.stringify(rowData));
                 }
-                var productList = productArray;
+                // var productList = productArray;
 
                 // scopeの更新と反映
-                $scope.$apply(productList);        // ★
-                // alert("query success");
+                $scope.$apply(productArray);        // ★
+                alert("query success");
                 console.log('End query');
                 // alert(JSON.stringify($scope.productList));
                 resolve();
@@ -446,12 +459,12 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
               if(clientId != initService.init_delivery[i].clientId || deliveryStDate !=  initService.init_delivery[i].deliveryStDate) {
                 clientbydateId++;
                 tx.executeSql('INSERT INTO TClientByDate VALUES (' + clientbydateId + ', ' + initService.init_delivery[i].clientId + ', "' + initService.init_delivery[i].deliveryStDate + '", ' + clientbydateId + ', 0)');
-              //  alert("add tclientbydate!!");
+                // alert("add tclientbydate!! " + initService.init_delivery[i].clientId + " / " + initService.init_delivery[i].deliveryStDate);
               }
               tx.executeSql('INSERT INTO TDelivery VALUES (' + (i + 1) + ', ' + clientbydateId + ', ' + initService.init_delivery[i].productId + ', ' + initService.init_delivery[i].mon + ', ' + initService.init_delivery[i].wed + ', ' + initService.init_delivery[i].fri + ', ' + initService.init_delivery[i].other + ', 0)');
               clientId = initService.init_delivery[i].clientId;
               deliveryStDate = initService.init_delivery[i].deliveryStDate;
-            //  alert("add tdelivery!!");
+              // alert("add tdelivery!! " + clientbydateId + " / " + initService.init_delivery[i].productId);
           }
           // alert("-3");
           tx.executeSql('CREATE INDEX text_stdate_idx on TClientByDate(deliveryStDate);');
