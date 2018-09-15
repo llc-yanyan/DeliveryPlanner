@@ -4,7 +4,7 @@ var app = angular.module( 'myApp', ['onsen.directives']);
 app.controller('AppController', function(initService, formatDate, calcStWeekDate, calcEdWeekDate, $scope) {
     $scope.title = "コース別仕訳表";
     $scope.cource = "A6";
-    // $scope.productList = {};
+    $scope.productList = {};
     $scope.getProductList = {};
     $scope.deliveryList = {};
     $scope.insertBtnHide = true;
@@ -34,7 +34,7 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
                 $scope.insertBtnHide = true;
                 var db = window.openDatabase("Database",dbVer,"TestDatabase",2048);
                 // var db = window.openDatabase("Database","1.0","TestDatabase",200000);
-                alert("2- db version:" + db.version);
+                // alert("2- db version:" + db.version);
                 db.transaction(
                     function(tx){
                         // alert("dd");
@@ -58,32 +58,13 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
                         LEFT JOIN TDelivery td ON td.clientbydateId = t.clientbydateId and td.deleteFlg = 0 \
                         LEFT JOIN MProduct m2 ON m2.productId = td.productId and m2.deleteFlg = 0 \
                         ORDER BY t.orderNum, m1.clientId, m2.productId', [], querySuccess, errorCB);
-                        // tx.executeSql('\
-                        // SELECT \
-                        //   m1.categoryName as categoryName, \
-                        //   m1.clientName as clientName, \
-                        //   m1.clientId as clientId, \
-                        //   t.orderNum as orderNum, \
-                        //   m2.productName as productName, \
-                        //   m2.productId as productId, \
-                        //   td.deliveryId as deliveryId, \
-                        //   t.deliveryStDate as deliveryStDate, \
-                        //   td.mon as mon, \
-                        //   td.wed as wed, \
-                        //   td.fri as fri, \
-                        //   td.other as other \
-                        // FROM (SELECT * FROM MClient WHERE deleteFlg = 0) m1 \
-                        // LEFT JOIN (SELECT * FROM TClientByDate WHERE deliveryStDate = "' + $scope.weekDaySt + '" and deleteFlg = 0) t ON t.clientId = m1.clientId \
-                        // LEFT JOIN TDelivery td ON td.clientbydateId = t.clientbydateId and td.deleteFlg = 0 \
-                        // LEFT JOIN MProduct m2 ON m2.productId = td.productId and m2.deleteFlg = 0 \
-                        // ORDER BY t.orderNum, m1.clientId, m2.productId', [], querySuccess, errorCB);
                     },
                     function(){
-                        alert("2- select fail");
+                        // alert("2- select fail");
                         // 失敗時
                     },
                     function(){
-                        alert("2- select success");
+                        // alert("2- select success");
                         // 成功時
                     }
                 );                    
@@ -91,7 +72,7 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
             },100);
             
             var querySuccess = function(tx,results){
-                alert("2- query success");
+                // alert("2- query success");
                 var len = results.rows.length;
                 // alert(len);
                 console.log('Start query');
@@ -161,7 +142,7 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
             };
             
             var errorCB = function(err) {
-                alert("error:" + err.sqlString);
+                // alert("error:" + err.sqlString);
                 console.log("Error occured while executing SQL: "+err.code);
             };
         });
@@ -174,7 +155,7 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
                 console.log('Start selectDatabase');
                 var db = window.openDatabase("Database",dbVer,"TestDatabase",2048);
                 // var db = window.openDatabase("Database","1.0","TestDatabase",200000);
-                alert("3- db version:" + db.version);
+                // alert("3- db version:" + db.version);
                 db.transaction(
                     function(tx){
                         // alert("dd");
@@ -192,11 +173,11 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
                         GROUP BY m.productId', [], querySuccess, errorCB);
                     }, 
                     function(){
-                        alert("3- select fail");
+                        // alert("3- select fail");
                         // 失敗時
                     },
                     function(){
-                        alert("3- select success");
+                        // alert("3- select success");
                         // 成功時
                     }
                 );                    
@@ -204,7 +185,7 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
             },100);
             
             var querySuccess = function(tx,results){
-                alert("3- query success");
+                // alert("3- query success");
                 var len = results.rows.length;
                 // alert(len);
                 console.log('Start query');
@@ -225,18 +206,18 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
                     productArray.push(rowData);
                     // alert(JSON.stringify(rowData));
                 }
-                // var productList = productArray;
+                $scope.productList = productArray;
 
                 // scopeの更新と反映
-                $scope.$apply(productArray);        // ★
-                alert("query success");
+                $scope.$apply($scope.productList);        // ★
+                // alert("query success");
                 console.log('End query');
                 // alert(JSON.stringify($scope.productList));
                 resolve();
             };
             
             var errorCB = function(err) {
-              alert("error:" + err.sqlString);
+              // alert("error:" + err.sqlString);
               console.log("Error occured while executing SQL: "+err.code);
             };
         });
