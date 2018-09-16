@@ -60,8 +60,8 @@
     </ons-toolbar>
 
     <ons-tabbar position="bottom">
-      <ons-tab page="page1.html" label="配達先別" active></ons-tab>
-      <ons-tab page="page2.html" label="商品別"></ons-tab>
+      <ons-tab page="page1.html" label="配達先別" active ng-click="updatedCheck()"></ons-tab>
+      <ons-tab page="page2.html" label="商品別" ng-click="updatedCheck()"></ons-tab>
     </ons-tabbar>
 
     <ons-template id="clientAddDialog.html">
@@ -97,7 +97,7 @@
         <div style="padding: 10px;">
       　   <ons-input ng-model="_categoryName" modifier="underbar" placeholder="エリア" type="text"></ons-input>
           <ons-input ng-model="_clientName" modifier="underbar" placeholder="名前" type="text"></ons-input>
-          <ons-button ng-click="updateClient(_clientId, _categoryName, _clientName)">変更</ons-button>
+          <ons-button ng-click="updateClient(_clientPos, _categoryName, _clientName)">変更</ons-button>
         </div>
       </ons-dialog>
     </ons-template>
@@ -110,7 +110,7 @@
         <div style="padding: 10px;">
           <ons-select ng-model="_productId">
             <option value="">製品を選択してください</option>
-            <option ng-repeat="product3 in getProductList" value="{{product3.productId}}">
+            <option ng-repeat="product3 in getProductList" value="{{product3.productId}}|{{product3.productName}}">
             {{product3.productName}}</option>
           </ons-select>
 
@@ -118,7 +118,7 @@
           <ons-input ng-model="_wed" modifier="underbar" placeholder="水曜" type="number"></ons-input>
           <ons-input ng-model="_fri" modifier="underbar" placeholder="金曜" type="number"></ons-input>
           <ons-input ng-model="_other" modifier="underbar" placeholder="他" type="number"></ons-input>
-          <ons-button ng-click="insertProductForClient(_clientId, _productId, _mon, _wed, _fri, _other)">登録</ons-button>
+          <ons-button ng-click="insertProductForClient(_clientPos, _productId, _mon, _wed, _fri, _other)">登録</ons-button>
         </div>
       </ons-dialog>
     </ons-template>
@@ -153,7 +153,7 @@
           <div class="center">配達商品の削除</div>
         </ons-toolbar>
         <div style="padding: 10px;">
-          <ons-button ng-click="deleteData(3, _deliveryId)">削除</ons-button>
+          <ons-button ng-click="deleteData(_clientPos, _productPos)">削除</ons-button>
         </div>
       </ons-dialog>
     </ons-template>
@@ -165,14 +165,16 @@
         <h2>配達先別</h2>
         <ons-row class="txtLarge">
           <ons-col>
-            <ons-button class="btnLarge" ng-click="today()" ng-hide="todayBtnHide">今日</ons-button>
+            <ons-button class="btnLarge" ng-click="updatedCheck();today();" ng-hide="todayBtnHide">今日</ons-button>
           </ons-col>
-          <ons-col><ons-button modifier="large" class="btnLarge" ng-click="prevWeek()">&lt;</ons-button></ons-col>
+          <ons-col><ons-button modifier="large" class="btnLarge" ng-click="updatedCheck();prevWeek();">&lt;</ons-button></ons-col>
           <ons-col width="25%" class="txtLarge">{{weekDaySt}}<br/>〜<br/>{{weekDayEd}}</ons-col>
-          <ons-col><ons-button modifier="large" class="btnLarge" ng-click="nextWeek()">&gt;</ons-button></ons-col>
+          <ons-col><ons-button modifier="large" class="btnLarge" ng-click="updatedCheck();nextWeek();">&gt;</ons-button></ons-col>
           <ons-col>
             <ons-button class="btnLarge" ng-click="insert()" ng-hide="insertBtnHide">決定</ons-button>
-            <ons-button class="btnLarge" ng-click="update()" ng-hide="updateBtnHide">保存</ons-button>
+            <div ng-show="!!deliveryList.length">
+              <ons-button class="btnLarge" ng-click="save()" ng-hide="updateBtnHide">保存</ons-button>
+            </div>
             <ons-button class="btnLarge" ng-click="copy()" ng-hide="copyBtnHide">コピー</ons-button>
           </ons-col>
         </ons-row>
@@ -188,7 +190,7 @@
           <thead>
           </thead>
           <tbody id="sortable">
-          <tr ng-repeat="delivery in deliveryList" style="background-color: white;">
+          <tr ng-repeat="(i, delivery) in deliveryList" style="background-color: white;">
             <td width="15%">
               <table style="background-color: #fff7f0;" width="100%">
                 <tr>
@@ -196,7 +198,7 @@
                     {{delivery.categoryName}}</td>
               	</tr>
                 <tr>
-                  <td title="'ClientName'" class="clientName" width="50%" ng-click="dialogDispUpdClient(delivery.clientId, delivery.categoryName, delivery.clientName)">
+                  <td title="'ClientName'" class="clientName" width="50%" ng-click="dialogDispUpdClient($index, delivery.categoryName, delivery.clientName)">
                     {{delivery.clientName}}</td>
               	</tr>
               </table>
@@ -208,43 +210,45 @@
               </span>
               <table class="table" width="100%">
                 <tr>
-                  <th width="52%" style="background-color: #eeeeee;" ng-click="dialogDispAddProductForClient(delivery.clientId)">商品</th>
+                  <th width="52%" style="background-color: #eeeeee;" ng-click="dialogDispAddProductForClient(i)">商品</th>
                   <th width="12%" style="background-color: #eeeeee;">月曜</th>
                   <th width="12%" style="background-color: #eeeeee;">水曜</th>
                   <th width="12%" style="background-color: #eeeeee;">金曜</th>
                   <th width="12%" style="background-color: #eeeeee;">他</th>
                 </tr>
-                <tr ng-repeat="product2 in delivery.products">
+                <tr ng-repeat="(j, product2) in delivery.products">
                   <td title="'ProductName'" class="productName" style="background-color: #f0f7ff;">
-                    <div  ng-click="dialogDispDelProductForClient(product2.deliveryId)">{{product2.productName}}</div></td>
+                    <div  ng-click="dialogDispDelProductForClient(i, j)">{{product2.productName}}</div></td>
                   <td title="'Mon'" class="weekdayName monday">
-                    <ons-input id="mon" modifier="underbar" float ng-model="product2.mon" type="number" min="0" max="99"></ons-input>
+                    <ons-input id="mon" modifier="underbar" float ng-model="product2.mon" type="number" min="0" max="99" ng-change="changed()"></ons-input>
                     </td>
                   <td title="'Wed'" class="weekdayName wednesday">
-                    <ons-input id="wed" modifier="underbar" float ng-model="product2.wed" type="number" min="0" max="99"></ons-input>
+                    <ons-input id="wed" modifier="underbar" float ng-model="product2.wed" type="number" min="0" max="99" ng-change="changed()"></ons-input>
                     </td>
                   <td title="'Fri'" class="weekdayName thursday">
-                    <ons-input id="fri" modifier="underbar" float ng-model="product2.fri" type="number" min="0" max="99"></ons-input>
+                    <ons-input id="fri" modifier="underbar" float ng-model="product2.fri" type="number" min="0" max="99" ng-change="changed()"></ons-input>
                     </td>
                   <td title="'Other'" class="weekdayName other">
-                    <ons-input id="other" modifier="underbar" float ng-model="product2.other" type="number" min="0" max="99"></ons-input>
+                    <ons-input id="other" modifier="underbar" float ng-model="product2.other" type="number" min="0" max="99" ng-change="changed()"></ons-input>
                     </td>
                 </tr>
               </table>
-              <ons-button class="btn" ng-click="dialogDispAddClient($index+1)">追加</ons-button>
+              <ons-button class="btn" ng-click="dialogDispAddClient(i+1)">追加</ons-button>
               &nbsp;&nbsp;
               <span ng-if='!$last'>
-              <ons-button class="btn" ng-click="orderDown($index)">▼</ons-button>
+              <ons-button class="btn" ng-click="orderDown(i)">▼</ons-button>
               </span>
               &nbsp;&nbsp;
               <span ng-if='!$first'>
-              <ons-button class="btn" ng-click="orderUp($index)">▲</ons-button>
+              <ons-button class="btn" ng-click="orderUp(i)">▲</ons-button>
               </span>
             </td>
           </tr>
           </tbody>
         </table>
-        <ons-button class="btnLarge" ng-click="dialogDispAddClient()">配達先追加</ons-button>
+        <div ng-hide="!!deliveryList.length">
+          <ons-button class="btnLarge" ng-click="dialogDispAddClient()">配達先追加</ons-button>
+        </div>
       </div>
     </ons-page>
   </ons-template>
@@ -256,9 +260,9 @@
         <h2>商品別</h2>
         <ons-row class="txtLarge">
           <ons-col></ons-col>
-          <ons-col><ons-button class="btnLarge" modifier="large" ng-click="prevWeek()">&lt;</ons-button></ons-col>
+          <ons-col><ons-button class="btnLarge" modifier="large" ng-click="updatedCheck();prevWeek();">&lt;</ons-button></ons-col>
           <ons-col width="25%" class="txtLarge">{{weekDaySt}}<br/>〜<br/>{{weekDayEd}}</ons-col>
-          <ons-col><ons-button class="btnLarge" modifier="large" ng-click="nextWeek()">&gt;</ons-button></ons-col>
+          <ons-col><ons-button class="btnLarge" modifier="large" ng-click="updatedCheck();nextWeek();">&gt;</ons-button></ons-col>
           <ons-col></ons-col>
         </ons-row>
         <hr/>

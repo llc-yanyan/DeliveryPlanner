@@ -8,10 +8,10 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
     $scope.getProductList = {}; // 商品名一覧（商品名）
     $scope.deliveryList = {}; // 配達先一覧（配達先）
     $scope.insertBtnHide = true;
-    $scope.updateBtnHide = true;
     $scope.copyBtnHide = true;
     $scope.todayBtnHide = true;
     $scope.maxClientId = 0;
+    $scope.updated = false;
     var dbVer = "1.0.10"; // base 1.0.10
     var debug = 1;
     
@@ -95,6 +95,7 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
                     rowData.clientName = results.rows.item(i).clientName;
                     rowData.clientId = results.rows.item(i).clientId;
                     rowData.orderNum = results.rows.item(i).orderNum;
+                    rowData.isExist =  true;
                     productArray = [];
                   }
                   var rowProductData = {};
@@ -119,16 +120,13 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
                 }
                 $scope.deliveryList = deliveryArray;
 
-                // if (len > 0 && deliveryCount == 0) {
                 if (len === 0) {
-                  $scope.updateBtnHide = true;
                   if (today >= new Date()) {
                     $scope.copyBtnHide = false;
                   } else {
                     $scope.copyBtnHide = true;
                   }
                 } else {
-                  $scope.updateBtnHide = false;
                   $scope.copyBtnHide = true;
                 }
 
@@ -331,7 +329,26 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
                         tmpDate = new Date($scope.weekDaySt);
                         tmpDate.setDate(tmpDate.getDate() - 7);
                         // alert(tmpDate);
-                        tx.executeSql('SELECT m1.categoryName as categoryName, m1.clientName as clientName, m1.clientId as clientId, t.orderNum as orderNum, m2.productName as productName, m2.productId as productId, t.deliveryId as deliveryId, t.deliveryStDate as deliveryStDate, t.mon as mon, t.wed as wed, t.fri as fri, t.other as other FROM (SELECT * FROM TDelivery WHERE deliveryStDate = "' + formatDate(tmpDate) + '" and deleteFlg = 0) t LEFT JOIN MClient m1 ON m1.clientId = t.clientId and m1.deleteFlg = 0 LEFT JOIN MProduct m2 ON m2.productId = t.productId and m2.deleteFlg = 0 order by t.orderNum, m1.clientId, m2.productId', [], querySuccess, errorCB);
+                        // tx.executeSql('SELECT m1.categoryName as categoryName, m1.clientName as clientName, m1.clientId as clientId, t.orderNum as orderNum, m2.productName as productName, m2.productId as productId, t.deliveryId as deliveryId, t.deliveryStDate as deliveryStDate, t.mon as mon, t.wed as wed, t.fri as fri, t.other as other FROM (SELECT * FROM TDelivery WHERE deliveryStDate = "' + formatDate(tmpDate) + '" and deleteFlg = 0) t LEFT JOIN MClient m1 ON m1.clientId = t.clientId and m1.deleteFlg = 0 LEFT JOIN MProduct m2 ON m2.productId = t.productId and m2.deleteFlg = 0 order by t.orderNum, m1.clientId, m2.productId', [], querySuccess, errorCB);
+                        tx.executeSql('\
+                        SELECT \
+                          m1.categoryName as categoryName, \
+                          m1.clientName as clientName, \
+                          m1.clientId as clientId, \
+                          t.orderNum as orderNum, \
+                          m2.productName as productName, \
+                          m2.productId as productId, \
+                          td.deliveryId as deliveryId, \
+                          t.deliveryStDate as deliveryStDate, \
+                          td.mon as mon, \
+                          td.wed as wed, \
+                          td.fri as fri, \
+                          td.other as other \
+                        FROM (SELECT * FROM TClientByDate WHERE deliveryStDate = "' + formatDate(tmpDate) + '" and deleteFlg = 0) t \
+                        LEFT JOIN (SELECT * FROM MClient WHERE deleteFlg = 0) m1 ON t.clientId = m1.clientId \
+                        LEFT JOIN TDelivery td ON td.clientbydateId = t.clientbydateId and td.deleteFlg = 0 \
+                        LEFT JOIN MProduct m2 ON m2.productId = td.productId and m2.deleteFlg = 0 \
+                        ORDER BY t.orderNum, m1.clientId, m2.productId', [], querySuccess, errorCB);
                     }, 
                     function(){
                         // alert("5- select fail");
@@ -366,6 +383,7 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
                     rowData = {};
                     rowData.categoryName = results.rows.item(i).categoryName;
                     rowData.clientName = results.rows.item(i).clientName;
+                    rowData.isExist = true;
                     productArray = [];
                   }
                   var rowProductData = {};
@@ -456,12 +474,12 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
           // alert("failer." + JSON.stringify(err));
         },
         function(){
-          selectProductDatabase().then(selectDeliveryDatabase()).then(getProductDatabase());
+          selectProductDatabase().then(selectDeliveryDatabase()).then(getProductDatabase().then(getMaxClientId()));
           // alert("success.");
         });
     }else{
       // alert("2- exist db version:" + db.version + "/dbVer:" + dbVer);
-      selectProductDatabase().then(selectDeliveryDatabase()).then(getProductDatabase());
+      selectProductDatabase().then(selectDeliveryDatabase()).then(getProductDatabase().then(getMaxClientId()));
     }
     
     // Order Down
@@ -469,6 +487,7 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
       // alert('down' + _orderNum);
       // changeOrder(_clientId, _orderNum, 1).then(selectDeliveryDatabase());
       changeOrderArray(_orderNum, _orderNum + 1);
+      $scope.updated = true;
     };
 
     // Order Up
@@ -476,6 +495,7 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
       // alert('up' + _orderNum);
       // changeOrder(_clientId, _orderNum, -1).then(selectDeliveryDatabase());
       changeOrderArray(_orderNum, _orderNum - 1);
+      $scope.updated = true;
     };
 
     // Order Change Array
@@ -486,37 +506,6 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
       // alert("after:" + JSON.stringify($scope.deliveryList));
       $scope.$apply($scope.deliveryList);
     }
-
-    // // Order Change
-    // var changeOrder = function(_clientId, _orderNum, _orderType){
-    //   return new Promise(function(resolve, reject) {
-    //     // タイムアウト値の設定は任意
-    //     setTimeout(function(){
-    //       console.log('Start changeOrder');
-    //       var db = window.openDatabase("Database", dbVer, "TestDatabase", 2048);
-    //         db.transaction(
-    //           function(tx){
-    //             tx.executeSql('UPDATE MClient SET orderNum = orderNum + ' + _orderType + ' WHERE clientId = ' + _clientId);
-    //             tx.executeSql('UPDATE MClient SET orderNum = orderNum + ' + _orderType + ' * -1 WHERE orderNum = ' + _orderNum + ' and clientId <> ' + _clientId);
-    //             // alert('UPDATE MClient SET orderNum = orderNum + ' + _orderType + ' WHERE clientId = ' + _clientId);
-    //             // alert('UPDATE MClient SET orderNum = orderNum + ' + _orderType + ' * -1 WHERE orderNum = ' + _orderNum + ' and clientId <> ' + _clientId);
-    //             // alert(_clientId + ':' + _orderNum + '/' + _orderType);
-    //             // alert(_clientId + ':' + _orderNum + '/' + (_orderNum + (_orderType * -1)));
-    //           }, 
-    //           function(){
-    //             // 失敗時
-    //             // alert("fail");
-    //           },
-    //           function(){
-    //             // alert("success");
-    //             // 成功時
-    //             resolve();
-    //           }
-    //       );
-    //       console.log('End changeOrder');
-    //     },100);
-    //   });
-    // };
 
     $scope.today = function() {
       $scope.todayBtnHide = true;
@@ -557,11 +546,6 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
     
       // データの再取得
       selectProductDatabase().then(selectDeliveryDatabase());
-    };
-
-    $scope.update = function() {
-      updateDeliveryDatabase().then(selectProductDatabase()).then(selectDeliveryDatabase());
-      $scope.updateAlert();
     };
 
     $scope.updateAlert = function() {
@@ -606,7 +590,7 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
         $scope._clientId = "";
         $scope._categoryName = "";
         $scope._clientName = "";
-        // getProductDatabase();
+        getProductDatabase();
         selectProductDatabase();
         clientAddDialog.show();
       });
@@ -621,16 +605,10 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
         $scope._categoryName = "";
         $scope._clientName = "";
         $scope._position = _position;
-        // getProductDatabase();
+        getProductDatabase();
         selectProductDatabase();
         clientAddDialog.show();
       });
-    };
-
-    // 配達先データのInsert
-    $scope.insertClient = function(_categoryName, _clientName, _productId, _mon, _wed, _fri, _other, _clientId) {
-      getMaxClientId().then(insertClientDatabase(_categoryName, _clientName, _orderNum)).then(insertProductForClientDatabase('', _productId, _mon, _wed, _fri, _other)).then(selectProductDatabase()).then(selectDeliveryDatabase());
-      clientAddDialog.hide();
     };
 
     // 配達先データのInsert
@@ -638,6 +616,9 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
       var rowData = {};
       rowData.clientName = _clientName;
       rowData.categoryName = _categoryName;
+      rowData.clientId = $scope.maxClientId++;
+      rowData.isExist = false;
+
       var rowData2 = {};
       var product = _productId.split("|");
       rowData2.productId = product[0];
@@ -646,79 +627,33 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
       rowData2.wed = _wed;
       rowData2.fri = _fri;
       rowData2.other = _other;
+
       var rowData3 = {};
       rowData3.push = rowData2;
       rowData.products = rowData3;
-      if($scope.deliveryList.length < 1){
-        $scope.deliveryList.push(rowData);
-      }else{
-        $scope.deliveryList.splice($scope._position, 0, rowData);
-      }
-      alert("step1");
-      // todo 登録一覧をベースにレコードを再作成
-      new Promise(function(resolve, reject){
-        setTimeout(function(){
-          console.log('Start copyDatabase');
-          var db = window.openDatabase("Database",dbVer,"TestDatabase",2048);
-          db.transaction(
-              function(tx){
-//                tx.executeSql('SELECT * FROM MClient order by orderNum', [], querySuccess, errorCB);
-              }, 
-              function(){
-                // alert("5- select fail");
-                // 失敗時
-      alert("step3-2");
-              },
-              function(){
-                // alert("5- select success");
-                // 成功時
-      alert("step3-1");
-              }
-          );                    
-          console.log('End selectDatabase');
-        },100);
-        
-        var querySuccess = function(tx,results){
-          // alert("5- query success");
-          var len = results.rows.length;
-          // alert(len);
-          console.log('Start query');
-          
-          // memo 消しちゃだめ。過去データ保持
-          // tx.executeSql('DELETE FROM MClient');
-          // *************************
-          // クエリ成功時の処理をかく
-          // *************************
-          for (var i = 0; i < len; i++) {
-            /**
-             * ロジック
-             *  $scope.deliveryListとMClientをマッチングさせながらInsert&Update
-             */
-              // tx.executeSql('INSERT INTO MClient VALUES (' + initService.init_client[i].clientId + ', "' + initService.init_client[i].categoryName + '", "' + initService.init_client[i].clientName + '",' + initService.init_client[i].clientId + ', 0)');
-          }
 
-          // alert("5- query success");
-          console.log('End query');
-          // alert(JSON.stringify($scope.deliveryList));
-      alert("step2");
-          resolve();
-        };
-        
-        var errorCB = function(err) {
-          console.log("Error occured while executing SQL: "+err.code);
-        };
-      alert("step4");
-      });
+      if($scope.deliveryList.length < 1){
+        // alert("a:" + $scope.deliveryList.length + " pos:" + $scope._position);
+        $scope.deliveryList.push(rowData);
+      }else if($scope._position == 0){
+        // alert("b");
+        $scope.deliveryList.unshift(rowData);
+      }else{
+        // alert("c");
+        $scope.deliveryList.splice($scope._position, 1, rowData);
+      }
+
       clientAddDialog.hide();
+      $scope.updated = true;
     };
 
     // 配達先データのUpdate
-    $scope.dialogDispUpdClient = function(_clientId, _categoryName, _clientName) {
+    $scope.dialogDispUpdClient = function(_clientPos, _categoryName, _clientName) {
       ons.createDialog('clientUpdDialog.html', {
         parentScope: $scope
       }).then(function(clientUpdDialog) {
         // alert(_categoryName);
-        $scope._clientId = _clientId;
+        $scope._clientPos = _clientPos;
         $scope._categoryName = _categoryName;
         $scope._clientName = _clientName;
         clientUpdDialog.show();
@@ -726,29 +661,46 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
     };
 
     // 配達先データのUpdate
-    $scope.updateClient = function(_clientId, _categoryName, _clientName) {
-      // alert(_categoryName);
-      updateClientDatabase(_clientId, _categoryName, _clientName).then(selectDeliveryDatabase());
+    $scope.updateClient = function(_clientPos, _categoryName, _clientName) {
+      // alert("_clientPos:" + _clientPos + " / _categoryName:" + _categoryName + " / _clientName:" + _clientName);
+      // updateClientDatabase(_clientPos, _categoryName, _clientName).then(selectDeliveryDatabase());
+      $scope.deliveryList[_clientPos].categoryName = _categoryName;
+      $scope.deliveryList[_clientPos].clientName = _clientName;
+
       clientUpdDialog.hide();
+      $scope.updated = true;
     };
 
     // 配達先の商品データのInsert
-    $scope.dialogDispAddProductForClient = function(_clientId) {
+    $scope.dialogDispAddProductForClient = function(_clientPos) {
       ons.createDialog('clientProductAddDialog.html', {
         parentScope: $scope
       }).then(function(clientProductAddDialog) {
         // alert(_categoryName);
-        $scope._clientId = _clientId;
-        // getProductDatabase();
-        selectProductDatabase();
+        $scope._clientPos = _clientPos;
+        getProductDatabase();
+        // selectProductDatabase();
         clientProductAddDialog.show();
       });
     };
     
-    $scope.insertProductForClient = function(_clientId, _productId, _mon, _wed, _fri, _other) {
-      insertProductForClientDatabase(_clientId, _productId, _mon, _wed, _fri, _other).then(selectProductDatabase()).then(selectDeliveryDatabase());
-      $scope.getProductList.push = new Object; // TODO
+    $scope.insertProductForClient = function(_clientPos, _productId, _mon, _wed, _fri, _other) {
+      // alert("_clientPos:" + _clientPos + " / _productId:" + _productId + " / _mon:" + _mon);
+
+      var rowData2 = {};
+      var product = _productId.split("|");
+      rowData2.productId = product[0];
+      rowData2.productName = product[1];
+      rowData2.mon = _mon;
+      rowData2.wed = _wed;
+      rowData2.fri = _fri;
+      rowData2.other = _other;
+      alert(JSON.stringify(rowData2));
+
+      $scope.deliveryList[_clientPos].products.push(rowData2);
+
       clientProductAddDialog.hide();
+      $scope.updated = true;
     };
 
     // 商品データのInsert
@@ -768,20 +720,37 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
     };
 
     // 配達先商品データのDelete
-    $scope.dialogDispDelProductForClient = function(_deliveryId) {
+    $scope.dialogDispDelProductForClient = function(_clientPos, _productPos) {
       ons.createDialog('clientProductDelDialog.html', {
         parentScope: $scope
       }).then(function(clientProductDelDialog) {
         // alert(_deliveryId);
-        $scope._deliveryId = _deliveryId;
+        $scope._clientPos = _clientPos;
+        $scope._productPos = _productPos;
         clientProductDelDialog.show();
       });
     };
 
-    $scope.deleteData = function(_type, _key) {
-      // alert(_type + "/" + _key);
-      deleteDatabase(_type, _key).then(selectProductDatabase()).then(selectDeliveryDatabase());
+    $scope.deleteData = function(_clientPos, _productPos) {
+      // alert("_clientPos:" + _clientPos + " / _productPos:" + _productPos);
+
+      var clientData = $scope.deliveryList[_clientPos];
+      // alert(JSON.stringify(clientData));
+      // var productList = clientData.products.splice(_productPos, 1);
+      clientData.products.splice(_productPos, 1);
+      // alert(JSON.stringify(clientData));
+      if(clientData.products.length > 0){
+        $scope.deliveryList[_clientPos] = clientData;
+      }else{
+        $scope.deliveryList.splice(_clientPos, 1);
+      }
+
+      // alert(JSON.stringify($scope.deliveryList[_clientPos]));
+      // $scope.$apply($scope.deliveryList);
+      // alert("done");
+
       clientProductDelDialog.hide();
+      $scope.updated = true;
     };
 
     // Client Database for insert
@@ -810,7 +779,7 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
               function(){
                 // 成功時
                 // alert("8- insert success");
-          resolve();
+                resolve();
               }
           );
           console.log('End insertClientDatabase');
@@ -839,7 +808,7 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
               function(){
                 // 成功時
                 // alert("9- insert success");
-          resolve();
+                resolve();
               }
           );
           console.log('End updateClientDatabase');
@@ -868,10 +837,38 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
               function(){
                 // 成功時
                 // alert("6- insert success");
-          resolve();
+                resolve();
               }
           );
           console.log('End insertProductDatabase');
+        },100);
+      });
+    };
+
+    // ClientByDate Database for delete TODO
+    var deleteClientByDateDatabase = function(_deliveryStDate){
+      alert("deleteClientByDateDatabase:" + _deliveryStDate);
+      return new Promise(function(resolve, reject) {
+        // タイムアウト値の設定は任意
+        setTimeout(function(){
+          console.log('Start deleteClientByDateDatabase');
+          var db = window.openDatabase("Database", dbVer, "TestDatabase", 2048);
+          // var db = window.openDatabase("Database", "1.0", "TestDatabase", 200000);
+            db.transaction(
+              function(tx){
+                tx.executeSql('DELETE FROM TClientByDate WHERE deliveryStDate = "' + _deliveryStDate + '";');
+              }, 
+              function(){
+                // 失敗時
+                alert("9- insert fail");
+              }, 
+              function(){
+                // 成功時
+                alert("9- insert success");
+                resolve();
+              }
+          );
+          console.log('End deleteClientByDateDatabase');
         },100);
       });
     };
@@ -892,6 +889,49 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
       updateProductDatabase(_productId, _productName).then(selectProductDatabase()).then(selectDeliveryDatabase());
       productUpdDialog.hide();
     };
+
+    $scope.changed = function() {
+      // alert("updated");
+      $scope.updated = true;
+    }
+
+    // updated check!!
+    $scope.updatedCheck = function() {
+      if($scope.updated){
+        if(confirm("データが変更されています。保存しますか？")){
+          $scope.save();
+          $scope.updated = false;
+        }
+        $scope.updated = false;
+      };
+      // alert("aa");
+    }
+
+    // save TODO
+    $scope.save = function() {
+      /**
+       * Rule
+       * - client
+       *  clientidがない場合は、INSERT、すでに存在する場合はUPDATEにする
+       *  ※削除はしない
+       * - clientbydate
+       *  clinetbydateは一旦すべて削除する
+       *  productlistの順に処理をしていき、全て再生成する
+       * ※前提
+       * 先にgetMaxClientIdを管理して、その数字を配列に追加しておく
+       * 配列の中には、existFlgを設定して、なければINSERT、あればUPDATE。
+       * 先にclientIdを定義しているので、そのclientIdでclientByDateを設定
+       */
+      deleteClientByDateDatabase($scope.weekDaySt).then(
+        remakeDeliveryDatabase($scope.productList).then(
+          selectDeliveryDatabase().then(
+            $scope.updateAlert()
+          ).then(
+            $socpe.$apply($scope.deliveryList)
+          )
+        )
+      );
+    }
 
     // Product Database for update
     var updateProductDatabase = function(_productId, _productName){
@@ -914,10 +954,50 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
               function(){
                 // 成功時
                 // alert("7- update success");
-          resolve();
+                resolve();
               }
           );
           console.log('End updateProductDatabase');
+        },100);
+      });
+    };
+
+    var remakeDeliveryDatabase = function(_deliveryList){
+      alert("remakeDeliveryDatabase");
+      return new Promise(function(resolve, reject) {
+        // タイムアウト値の設定は任意
+        setTimeout(function(){
+          console.log('Start remakeDeliveryDatabase');
+          var db = window.openDatabase("Database", dbVer, "TestDatabase", 2048);
+          // var db = window.openDatabase("Database", "1.0", "TestDatabase", 200000);
+            db.transaction(
+              function(tx){
+                alert("remakeDeliveryDatabase!!");
+                var len = _deliveryList.length;
+                for (var i = 0; i < len; i++) {
+                  var rowData = $scope.deliveryList[i];
+                  alert(JSON.stringify(rowData));
+
+                //   var len2 = rowData.products.length;
+                //   for (var i2 = 0; i2 < len2; i2++) {
+                //     // alert(JSON.stringify(rowData.products[i2]));
+                //     var rowData2 = rowData.products[i2];
+                //     // alert('UPDATE TDelivery SET mon = ' + rowData2['mon'] + ', wed = ' + rowData2['wed'] + ', fri = ' + rowData2['fri'] + ', other = ' + rowData2['other'] + ' WHERE clientId = ' + rowData2['clientId'] + ' AND productId = ' + rowData2['productId'] + ' AND deliveryStDate = "' + rowData2['deliveryStDate']+ '";');
+                //     tx.executeSql('UPDATE TDelivery SET mon = ' + rowData2.mon + ', wed = ' + rowData2.wed + ', fri = ' + rowData2.fri + ', other = ' + rowData2.other + ' WHERE deliveryId = ' + rowData2.deliveryId + ';');
+                //   }
+                }
+              }, 
+              function(){
+                // 失敗時
+                // alert("4- create fail");
+              }, 
+              function(){
+                // 成功時
+                // alert("4- create success");
+              }
+          );
+          console.log('End remakeDeliveryDatabase');
+          resolve();
         },100);
       });
     };
@@ -1080,6 +1160,7 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
         },100);
       });
     };
+
 
   var moveAt = function(array, index, at) {
     // alert("aa1 index:" + index + " / at:" + at);
