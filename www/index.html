@@ -234,11 +234,11 @@
               <ons-button class="btn" ng-click="dialogDispAddClient($index+1)">追加</ons-button>
               &nbsp;&nbsp;
               <span ng-if='!$last'>
-              <ons-button class="btn" ng-click="orderDown(delivery.clientId, delivery.orderNum)">▼</ons-button>
+              <ons-button class="btn" ng-click="orderDown($index)">▼</ons-button>
               </span>
               &nbsp;&nbsp;
               <span ng-if='!$first'>
-              <ons-button class="btn" ng-click="orderUp(delivery.clientId, delivery.orderNum)">▲</ons-button>
+              <ons-button class="btn" ng-click="orderUp($index)">▲</ons-button>
               </span>
             </td>
           </tr>
