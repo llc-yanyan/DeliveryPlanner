@@ -7,7 +7,6 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
     $scope.productList = {}; // 商品別一覧（合計）
     $scope.getProductList = {}; // 商品名一覧（商品名）
     $scope.deliveryList = {}; // 配達先一覧（配達先）
-    $scope.insertBtnHide = true;
     $scope.copyBtnHide = true;
     $scope.todayBtnHide = true;
     $scope.maxClientId = 0;
@@ -32,7 +31,7 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
         return new Promise(function(resolve, reject){
             setTimeout(function(){
                 console.log('Start selectDatabase');
-                $scope.insertBtnHide = true;
+                // $scope.insertBtnHide = true;
                 var db = window.openDatabase("Database",dbVer,"TestDatabase",2048);
                 // var db = window.openDatabase("Database","1.0","TestDatabase",200000);
                 // alert("2- db version:" + db.version);
@@ -424,11 +423,11 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
                     rowData = {};
                     rowData.categoryName = results.rows.item(i).categoryName;
                     rowData.clientName = results.rows.item(i).clientName;
+                    rowData.clientId = results.rows.item(i).clientId;
                     rowData.isExist = true;
                     productArray = [];
                   }
                   var rowProductData = {};
-                  rowProductData.deliveryId = "";
                   rowProductData.clientId = results.rows.item(i).clientId;
                   rowProductData.productId = results.rows.item(i).productId;
                   rowProductData.deliveryStDate = $scope.weekDaySt;
@@ -446,7 +445,6 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
                 }
                 $scope.deliveryList = deliveryArray;
 
-                $scope.insertBtnHide = false;
                 $scope.copyBtnHide = true;
 
                 // scopeの更新と反映
@@ -622,7 +620,6 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
       ).then(
         selectDeliveryDatabase()
       );
-      $scope.insertBtnHide = true;
       $scope.insertAlert();
     };
 
@@ -747,10 +744,10 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
       var product = _productId.split("|");
       rowData2.productId = product[0];
       rowData2.productName = product[1];
-      rowData2.mon = _mon == "" ? 0 : _mon;
-      rowData2.wed = _wed == "" ? 0 : _wed;
-      rowData2.fri = _fri == "" ? 0 : _fri;
-      rowData2.other = _other == "" ? 0 : _other;
+      rowData2.mon = _mon == undefined ? 0 : _mon;
+      rowData2.wed = _wed == undefined ? 0 : _wed;
+      rowData2.fri = _fri == undefined ? 0 : _fri;
+      rowData2.other = _other == undefined ? 0 : _other;
       alert(JSON.stringify(rowData2));
 
       $scope.deliveryList[_clientPos].products.push(rowData2);
@@ -816,69 +813,6 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
       $scope.updated = true;
     };
 
-    // Client Database for insert
-    var insertClientDatabase = function(_categoryName, _clientName, _orderNum){
-      return new Promise(function(resolve, reject) {
-        // タイムアウト値の設定は任意
-        setTimeout(function(){
-          alert('a2');
-          console.log('Start insertClientDatabase');
-          var db = window.openDatabase("Database", dbVer, "TestDatabase", 2048);
-          // var db = window.openDatabase("Database", "1.0", "TestDatabase", 200000);
-            db.transaction(
-              function(tx){
-                alert('a3');
-                for(var i = 0; i < $scope.getProductList.length; i++){
-                 alert(' - ' + $scope.deliveryList[i].categoryName);
-//                  tx.executeSql('INSERT INTO MClient(clientId, categoryName, clientName, orderNum) VALUES (' + $scope.maxClientId + ',"' + _categoryName + '", "' + _clientName + '", ' + $scope.maxClientId + ')');
-                }
-                alert('INSERT INTO MClient(clientId, categoryName, clientName) VALUES (' + $scope.maxClientId + ',"' + _categoryName + '", "' + _clientName + '")');
-                // tx.executeSql('INSERT INTO MClient(clientId, categoryName, clientName, orderNum) VALUES (' + $scope.maxClientId + ',"' + _categoryName + '", "' + _clientName + '", ' + $scope.maxClientId + ')');
-              }, 
-              function(){
-                // 失敗時
-                // alert("8- insert fail");
-              }, 
-              function(){
-                // 成功時
-                // alert("8- insert success");
-                resolve();
-              }
-          );
-          console.log('End insertClientDatabase');
-        },100);
-      });
-    };
-
-    // Client Database for update
-    var updateClientDatabase = function(_clientId, _categoryName, _clientName){
-      return new Promise(function(resolve, reject) {
-        // タイムアウト値の設定は任意
-        setTimeout(function(){
-          console.log('Start updateClientDatabase');
-          var db = window.openDatabase("Database", dbVer, "TestDatabase", 2048);
-          // var db = window.openDatabase("Database", "1.0", "TestDatabase", 200000);
-            db.transaction(
-              function(tx){
-                // alert(_clientId + "/" + _categoryName + "/" + _clientName);
-                // alert('UPDATE MProduct SET productName = "' + _productName + '" WHERE productId = ' + _productId + ';');
-                tx.executeSql('UPDATE MClient SET categoryName = "' + _categoryName + '", clientName = "' + _clientName + '" WHERE clientId = ' + _clientId + ';');
-              }, 
-              function(){
-                // 失敗時
-                // alert("9- insert fail");
-              }, 
-              function(){
-                // 成功時
-                // alert("9- insert success");
-                resolve();
-              }
-          );
-          console.log('End updateClientDatabase');
-        },100);
-      });
-    };
-
     // Product Database for insert
     var insertProductDatabase = function(_productName){
       return new Promise(function(resolve, reject) {
@@ -895,11 +829,11 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
               }, 
               function(){
                 // 失敗時
-                alert("6- insert fail");
+                // alert("6- insert fail");
               }, 
               function(){
                 // 成功時
-                alert("6- insert success");
+                // alert("6- insert success");
                 resolve();
               }
           );
@@ -1095,166 +1029,6 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
         },100);
       });
     };
-
-    // Delivery Database for update
-    var updateDeliveryDatabase = function(){
-      return new Promise(function(resolve, reject) {
-        // タイムアウト値の設定は任意
-        setTimeout(function(){
-          console.log('Start updateDeliveryDatabase');
-          var db = window.openDatabase("Database", dbVer, "TestDatabase", 2048);
-          // var db = window.openDatabase("Database", "1.0", "TestDatabase", 200000);
-            db.transaction(
-              function(tx){
-
-                var len = $scope.deliveryList.length;
-                for (var i = 0; i < len; i++) {
-                  var rowData = $scope.deliveryList[i];
-                  // alert(JSON.stringify(rowData));
-
-                  var len2 = rowData.products.length;
-                  for (var i2 = 0; i2 < len2; i2++) {
-                    // alert(JSON.stringify(rowData.products[i2]));
-                    var rowData2 = rowData.products[i2];
-                    // alert('UPDATE TDelivery SET mon = ' + rowData2['mon'] + ', wed = ' + rowData2['wed'] + ', fri = ' + rowData2['fri'] + ', other = ' + rowData2['other'] + ' WHERE clientId = ' + rowData2['clientId'] + ' AND productId = ' + rowData2['productId'] + ' AND deliveryStDate = "' + rowData2['deliveryStDate']+ '";');
-                    tx.executeSql('UPDATE TDelivery SET mon = ' + rowData2.mon + ', wed = ' + rowData2.wed + ', fri = ' + rowData2.fri + ', other = ' + rowData2.other + ' WHERE deliveryId = ' + rowData2.deliveryId + ';');
-                  }
-                }
-              }, 
-              function(){
-                // 失敗時
-                // alert("4- create fail");
-              }, 
-              function(){
-                // 成功時
-                // alert("4- create success");
-              }
-          );
-          console.log('End createDatabase');
-          resolve();
-        },100);
-      });
-    };
-
-    // Delivery Database for insert
-    var insertDeliveryDatabase = function(){
-      return new Promise(function(resolve, reject) {
-        // タイムアウト値の設定は任意
-        setTimeout(function(){
-          console.log('Start insertDeliveryDatabase');
-          var db = window.openDatabase("Database", dbVer, "TestDatabase", 2048);
-          // var db = window.openDatabase("Database", "1.0", "TestDatabase", 200000);
-            db.transaction(
-              function(tx){
-
-                var len = $scope.deliveryList.length;
-                for (var i = 0; i < len; i++) {
-                  var rowData = $scope.deliveryList[i];
-                  // alert(JSON.stringify(rowData));
-
-                  var len2 = rowData.products.length;
-                  for (var i2 = 0; i2 < len2; i2++) {
-                    // alert(JSON.stringify(rowData.products[i2]));
-                    var rowData2 = rowData.products[i2];
-                    // alert('INSERT INTO TDelivery(clientId, productId, deliveryStDate, mon, wed, fri, other) VALUES (' + rowData2['clientId'] + ', ' + rowData2['productId'] + ', "' + rowData2['deliveryStDate'] + '", ' + rowData2['mon'] + ', ' + rowData2['wed'] + ', ' + rowData2['fri'] + ', ' + rowData2['other'] + ')');
-                    tx.executeSql('INSERT INTO TDelivery(clientId, productId, deliveryStDate, mon, wed, fri, other) VALUES (' + rowData2.clientId + ', ' + rowData2.productId + ', "' + rowData2.deliveryStDate + '", ' + rowData2.mon + ', ' + rowData2.wed + ', ' + rowData2.fri + ', ' + rowData2.other + ')');
-                  }
-                }
-              }, 
-              function(){
-                // 失敗時
-                // alert("6- create fail");
-              }, 
-              function(){
-                // 成功時
-                // alert("6- create success");
-              }
-          );
-          console.log('End createDatabase');
-          resolve();
-        },100);
-      });
-    };
-
-    // Client Product Database for insert
-    var insertProductForClientDatabase = function(_clientId, _productId, _mon, _wed, _fri, _other){
-      return new Promise(function(resolve, reject) {
-        // タイムアウト値の設定は任意
-        setTimeout(function(){
-          console.log('Start insertProductForClientDatabase');
-          var db = window.openDatabase("Database", dbVer, "TestDatabase", 2048);
-          // var db = window.openDatabase("Database", "1.0", "TestDatabase", 200000);
-            db.transaction(
-              function(tx){
-                // alert($scope.maxClientId);
-                if (_clientId === '') {
-                  _clientId = $scope.maxClientId;
-                }
-                // _clientId = $scope.maxClientId;
-                // alert('INSERT INTO TDelivery(clientId, productId, deliveryStDate, mon, wed, fri, other) VALUES (' + _clientId + ', ' + _productId + ', "' + $scope.weekDaySt + '", ' + _mon + ', ' + _wed + ', ' + _fri + ', ' + _other + ')');
-                _mon = _mon === undefined ? 0: _mon;
-                _wed = _wed === undefined ? 0: _wed;
-                _fri = _fri === undefined ? 0: _fri;
-                _other = _other === undefined ? 0: _other;
-                tx.executeSql('INSERT INTO TDelivery(clientId, productId, deliveryStDate, mon, wed, fri, other) VALUES (' + _clientId + ', ' + _productId + ', "' + $scope.weekDaySt + '", ' + _mon + ', ' + _wed + ', ' + _fri + ', ' + _other + ')');
-              }, 
-              function(){
-                // 失敗時
-                // alert("10- create fail");
-              }, 
-              function(){
-                // 成功時
-//                alert("10- create success");
-                // alert("10- create success" + $scope.maxClientId + " " + $scope._orderNum);
-                // changeOrder($scope.maxClientId, $scope._orderNum, -1);
-              }
-          );
-          console.log('End insertProductForClientDatabase');
-          resolve();
-        },100);
-      });
-    };
-
-    // All Type Database for delete
-    var deleteDatabase = function(_type, _key){
-      return new Promise(function(resolve, reject) {
-        // タイムアウト値の設定は任意
-        setTimeout(function(){
-          console.log('Start deleteDatabase');
-          var db = window.openDatabase("Database", dbVer, "TestDatabase", 2048);
-          // var db = window.openDatabase("Database", "1.0", "TestDatabase", 200000);
-            db.transaction(
-              function(tx){
-                var sqlString = '';
-                switch (_type) {
-                  case 1: // MProduct
-                    sqlString = 'UPDATE MProduct SET deleteFlg = 1 WHERE productId = ' + _key;
-                    break;
-                  case 2: // MClient
-                    sqlString = 'UPDATE MClient SET deleteFlg = 1 WHERE clientId = ' + _key;
-                    break;
-                  case 3: // TDelivery
-                    sqlString = 'UPDATE TDelivery SET deleteFlg = 1 WHERE deliveryId = ' + _key;
-                    break;
-                }
-                // alert(sqlString);
-                tx.executeSql(sqlString);
-              }, 
-              function(){
-                // 失敗時
-                // alert("11- create fail");
-              }, 
-              function(){
-                // 成功時
-                // alert("11- create success");
-              }
-          );
-          console.log('End deleteDatabase');
-          resolve();
-        },100);
-      });
-    };
-
 
   var moveAt = function(array, index, at) {
     // alert("aa1 index:" + index + " / at:" + at);
