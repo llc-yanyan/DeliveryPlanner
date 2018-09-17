@@ -11,6 +11,7 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
     $scope.copyBtnHide = true;
     $scope.todayBtnHide = true;
     $scope.maxClientId = 0;
+    $scope.maxClientByDateId = 0;
     $scope.updated = false;
     var dbVer = "1.0.10"; // base 1.0.10
     var debug = 1;
@@ -157,8 +158,8 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
                     function(tx){
                         tx.executeSql('\
                         SELECT \
-                          m.productId, \
-                          m.productName, \
+                          m.productId as productId, \
+                          m.productName as productName, \
                           ifnull(sum(td.mon), 0) as mon, \
                           ifnull(sum(td.wed), 0) as wed, \
                           ifnull(sum(td.fri), 0) as fri, \
@@ -191,16 +192,17 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
                 // クエリ成功時の処理をかく
                 // *************************
                 for (var i = 0; i < len; i++) {
-                    // alert(results.rows.item(i).productName + '/' + results.rows.item(i).mon + '/' + results.rows.item(i).wed + '/' + results.rows.item(i).fri);
-                    var rowData = {};
-                    rowData.productId = results.rows.item(i).productId;
-                    rowData.productName = results.rows.item(i).productName;
-                    rowData.mon = results.rows.item(i).mon;
-                    rowData.wed = results.rows.item(i).wed;
-                    rowData.fri = results.rows.item(i).fri;
-                    rowData.other = results.rows.item(i).other;
-                    productArray.push(rowData);
-                    // alert(JSON.stringify(rowData));
+                  // alert(results.rows.item(i).productName + '/' + results.rows.item(i).mon + '/' + results.rows.item(i).wed + '/' + results.rows.item(i).fri);
+                  var rowData = {};
+                  rowData.productId = results.rows.item(i).productId;
+                  rowData.productName = results.rows.item(i).productName;
+                  rowData.mon = results.rows.item(i).mon;
+                  rowData.wed = results.rows.item(i).wed;
+                  rowData.fri = results.rows.item(i).fri;
+                  rowData.other = results.rows.item(i).other;
+                  productArray.push(rowData);
+                  // alert(JSON.stringify(results.rows.item(i)));
+                  // alert(JSON.stringify(rowData));
                 }
                 $scope.productList = productArray;
 
@@ -306,6 +308,45 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
                 // alert("12- query success");
                 $scope.maxClientId = results.rows.item(0).maxClientId + 1;
                 $scope.$apply($scope.maxClientId); // ★
+                // alert($scope.maxClientId);
+                resolve();
+            };
+            
+            var errorCB = function(err) {
+                // console.log("Error occured while executing SQL: "+err.code);
+            };
+        });
+    };
+    
+    // ClientByDateID最大値取得(ClientByDate)
+    var getMaxClientByDateId = function(){
+        return new Promise(function(resolve, reject){
+            setTimeout(function(){
+                console.log('Start getMaxClientByDateId');
+                var db = window.openDatabase("Database",dbVer,"TestDatabase",2048);
+                // var db = window.openDatabase("Database","1.0","TestDatabase",200000);
+                // alert("12- db version:" + db.version);
+                db.transaction(
+                    function(tx){
+                        // alert("dd");
+                        tx.executeSql('SELECT MAX(clientByDateId) as maxClientByDateId FROM TClientByDate', [], querySuccess, errorCB);
+                    }, 
+                    function(){
+                        // alert("12- select fail");
+                        // 失敗時
+                    },
+                    function(){
+                        // alert("12- select success");
+                        // 成功時
+                    }
+                );
+                console.log('End getMaxClientByDateId');
+            },100);
+            
+            var querySuccess = function(tx,results){
+                // alert("12- query success");
+                $scope.maxClientByDateId = results.rows.item(0).maxClientByDateId + 1;
+                $scope.$apply($scope.maxClientByDateId); // ★
                 // alert($scope.maxClientId);
                 resolve();
             };
@@ -426,60 +467,68 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
     if(db.version != dbVer || debug == 1){
       // alert("1- create db version:" + db.version + "/dbVer:" + dbVer);
       db.changeVersion(db.version, dbVer,
-        function(tx) {
-          // 初期データの作成(client)
-          tx.executeSql('DROP TABLE IF EXISTS MClient');
-          tx.executeSql('CREATE TABLE IF NOT EXISTS MClient (clientId INTEGER PRIMARY KEY AUTOINCREMENT, categoryName text, clientName text, deleteFlg integer not null default 0)');
-          for (i = 0; i < initService.init_client.length; i++) {
-              tx.executeSql('INSERT INTO MClient VALUES (' + initService.init_client[i].clientId + ', "' + initService.init_client[i].categoryName + '", "' + initService.init_client[i].clientName + '", 0)');
-              // tx.executeSql('INSERT INTO MClient VALUES (' + initService.init_client[i].clientId + ', "' + initService.init_client[i].categoryName + '", "' + initService.init_client[i].clientName + '",' + initService.init_client[i].clientId + ', 0)');
-          }
-          // alert("-1");
-          // 初期データの作成(products)
-          tx.executeSql('DROP TABLE IF EXISTS MProduct');
-          tx.executeSql('CREATE TABLE IF NOT EXISTS MProduct (productId INTEGER PRIMARY KEY AUTOINCREMENT, productName text, deleteFlg INTEGER not null default 0)');
-          for (i = 0; i < initService.init_product.length; i++) {
-              tx.executeSql('INSERT INTO MProduct VALUES (' + initService.init_product[i].productId + ', "' + initService.init_product[i].productName + '", 0)');
-          }
-          // alert("-2");
-          // 初期データの作成(delivery)
-          tx.executeSql('DROP TABLE IF EXISTS TClientByDate');
-          tx.executeSql('CREATE TABLE IF NOT EXISTS TClientByDate (clientbydateId INTEGER PRIMARY KEY AUTOINCREMENT, clientId INTEGER, deliveryStDate text, orderNum integer, deleteFlg integer not null default 0)');
-          // 初期データの作成(delivery)
-          tx.executeSql('DROP TABLE IF EXISTS TDelivery');
-          tx.executeSql('CREATE TABLE IF NOT EXISTS TDelivery (deliveryId INTEGER PRIMARY KEY AUTOINCREMENT, clientbydateId INTEGER, productId INTEGER, mon integer, wed integer, fri integer, other integer, deleteFlg integer not null default 0)');
+      function(tx) {
+        // 初期データの作成(client)
+        tx.executeSql('DROP TABLE IF EXISTS MClient');
+        tx.executeSql('CREATE TABLE IF NOT EXISTS MClient (clientId INTEGER PRIMARY KEY AUTOINCREMENT, categoryName text, clientName text, deleteFlg integer not null default 0)');
+        for (i = 0; i < initService.init_client.length; i++) {
+            tx.executeSql('INSERT INTO MClient VALUES (' + initService.init_client[i].clientId + ', "' + initService.init_client[i].categoryName + '", "' + initService.init_client[i].clientName + '", 0)');
+            // tx.executeSql('INSERT INTO MClient VALUES (' + initService.init_client[i].clientId + ', "' + initService.init_client[i].categoryName + '", "' + initService.init_client[i].clientName + '",' + initService.init_client[i].clientId + ', 0)');
+        }
+        // alert("-1");
+        // 初期データの作成(products)
+        tx.executeSql('DROP TABLE IF EXISTS MProduct');
+        tx.executeSql('CREATE TABLE IF NOT EXISTS MProduct (productId INTEGER PRIMARY KEY AUTOINCREMENT, productName text, deleteFlg INTEGER not null default 0)');
+        for (i = 0; i < initService.init_product.length; i++) {
+            tx.executeSql('INSERT INTO MProduct VALUES (' + initService.init_product[i].productId + ', "' + initService.init_product[i].productName + '", 0)');
+        }
+        // alert("-2");
+        // 初期データの作成(delivery)
+        tx.executeSql('DROP TABLE IF EXISTS TClientByDate');
+        tx.executeSql('CREATE TABLE IF NOT EXISTS TClientByDate (clientbydateId INTEGER PRIMARY KEY AUTOINCREMENT, clientId INTEGER, deliveryStDate text, orderNum integer, deleteFlg integer not null default 0)');
+        // 初期データの作成(delivery)
+        tx.executeSql('DROP TABLE IF EXISTS TDelivery');
+        tx.executeSql('CREATE TABLE IF NOT EXISTS TDelivery (deliveryId INTEGER PRIMARY KEY AUTOINCREMENT, clientbydateId INTEGER, productId INTEGER, mon integer, wed integer, fri integer, other integer, deleteFlg integer not null default 0)');
 
-          var clientId = 0;
-          var deliveryStDate = '';
-          var clientbydateId = 0;
-          for (i = 0; i < initService.init_delivery.length; i++) {
-              if(clientId != initService.init_delivery[i].clientId || deliveryStDate !=  initService.init_delivery[i].deliveryStDate) {
-                clientbydateId++;
-                tx.executeSql('INSERT INTO TClientByDate VALUES (' + clientbydateId + ', ' + initService.init_delivery[i].clientId + ', "' + initService.init_delivery[i].deliveryStDate + '", ' + clientbydateId + ', 0)');
-                // alert("add tclientbydate!! " + initService.init_delivery[i].clientId + " / " + initService.init_delivery[i].deliveryStDate);
-              }
-              tx.executeSql('INSERT INTO TDelivery VALUES (' + (i + 1) + ', ' + clientbydateId + ', ' + initService.init_delivery[i].productId + ', ' + initService.init_delivery[i].mon + ', ' + initService.init_delivery[i].wed + ', ' + initService.init_delivery[i].fri + ', ' + initService.init_delivery[i].other + ', 0)');
-              clientId = initService.init_delivery[i].clientId;
-              deliveryStDate = initService.init_delivery[i].deliveryStDate;
-              // alert("add tdelivery!! " + clientbydateId + " / " + initService.init_delivery[i].productId);
+        var clientId = 0;
+        var deliveryStDate = '';
+        var clientbydateId = 0;
+        for (i = 0; i < initService.init_delivery.length; i++) {
+          if(clientId != initService.init_delivery[i].clientId || deliveryStDate !=  initService.init_delivery[i].deliveryStDate) {
+            clientbydateId++;
+            tx.executeSql('INSERT INTO TClientByDate VALUES (' + clientbydateId + ', ' + initService.init_delivery[i].clientId + ', "' + initService.init_delivery[i].deliveryStDate + '", ' + clientbydateId + ', 0)');
+            // alert("add tclientbydate!! " + initService.init_delivery[i].clientId + " / " + initService.init_delivery[i].deliveryStDate);
           }
-          // alert("-3");
-          tx.executeSql('CREATE INDEX text_stdate_idx on TClientByDate(deliveryStDate);');
-          tx.executeSql('CREATE INDEX int_clientId_idx on TClientByDate(clientId);');
-          tx.executeSql('CREATE INDEX int_productId_idx on TDelivery(productId);');
-          // alert("-4");
-        },
-        function(err){
-          // alert("failer." + err.message);
-          // alert("failer." + JSON.stringify(err));
-        },
-        function(){
-          selectProductDatabase().then(selectDeliveryDatabase()).then(getProductDatabase().then(getMaxClientId()));
-          // alert("success.");
-        });
+          tx.executeSql('INSERT INTO TDelivery VALUES (' + (i + 1) + ', ' + clientbydateId + ', ' + initService.init_delivery[i].productId + ', ' + initService.init_delivery[i].mon + ', ' + initService.init_delivery[i].wed + ', ' + initService.init_delivery[i].fri + ', ' + initService.init_delivery[i].other + ', 0)');
+          clientId = initService.init_delivery[i].clientId;
+          deliveryStDate = initService.init_delivery[i].deliveryStDate;
+          // alert("add tdelivery!! " + clientbydateId + " / " + initService.init_delivery[i].productId);
+        }
+        // alert("-3");
+        tx.executeSql('CREATE INDEX text_stdate_idx on TClientByDate(deliveryStDate);');
+        tx.executeSql('CREATE INDEX int_clientId_idx on TClientByDate(clientId);');
+        tx.executeSql('CREATE INDEX int_productId_idx on TDelivery(productId);');
+        // alert("-4");
+      },
+      function(err){
+        // alert("failer." + err.message);
+        // alert("failer." + JSON.stringify(err));
+      },
+      function(){
+        selectProductDatabase();
+        selectDeliveryDatabase();
+        getProductDatabase();
+        getMaxClientId();
+        getMaxClientByDateId();
+        // alert("success.");
+      });
     }else{
       // alert("2- exist db version:" + db.version + "/dbVer:" + dbVer);
-      selectProductDatabase().then(selectDeliveryDatabase()).then(getProductDatabase().then(getMaxClientId()));
+      selectProductDatabase();
+      selectDeliveryDatabase();
+      getProductDatabase();
+      getMaxClientId();
+      getMaxClientByDateId();
     }
     
     // Order Down
@@ -521,7 +570,8 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
       $scope.weekDayEd = formatDate(calcEdWeekDate(today));
     
       // データの再取得
-      selectProductDatabase().then(selectDeliveryDatabase());
+      selectProductDatabase()
+      selectDeliveryDatabase();
     };
     
     $scope.prevWeek = function() {
@@ -533,7 +583,8 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
       $scope.weekDayEd = formatDate(calcEdWeekDate(today));
     
       // データの再取得
-      selectProductDatabase().then(selectDeliveryDatabase());
+      selectProductDatabase()
+      selectDeliveryDatabase();
     };
     
     $scope.nextWeek = function() {
@@ -545,7 +596,8 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
       $scope.weekDayEd = formatDate(calcEdWeekDate(today));
     
       // データの再取得
-      selectProductDatabase().then(selectDeliveryDatabase());
+      selectProductDatabase();
+      selectDeliveryDatabase();
     };
 
     $scope.updateAlert = function() {
@@ -565,7 +617,11 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
 
     // 配達先データのInsert
     $scope.insert = function() {
-      insertDeliveryDatabase().then(selectProductDatabase()).then(selectDeliveryDatabase());
+      insertDeliveryDatabase().then(
+        selectProductDatabase()
+      ).then(
+        selectDeliveryDatabase()
+      );
       $scope.insertBtnHide = true;
       $scope.insertAlert();
     };
@@ -591,7 +647,6 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
         $scope._categoryName = "";
         $scope._clientName = "";
         getProductDatabase();
-        selectProductDatabase();
         clientAddDialog.show();
       });
     };
@@ -606,7 +661,6 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
         $scope._clientName = "";
         $scope._position = _position;
         getProductDatabase();
-        selectProductDatabase();
         clientAddDialog.show();
       });
     };
@@ -619,18 +673,20 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
       rowData.clientId = $scope.maxClientId++;
       rowData.isExist = false;
 
+      // alert(_mon);
       var rowData2 = {};
       var product = _productId.split("|");
       rowData2.productId = product[0];
       rowData2.productName = product[1];
-      rowData2.mon = _mon;
-      rowData2.wed = _wed;
-      rowData2.fri = _fri;
-      rowData2.other = _other;
+      rowData2.mon = _mon == undefined ? 0 : _mon;
+      rowData2.wed = _wed == undefined ? 0 : _wed;
+      rowData2.fri = _fri == undefined ? 0 : _fri;
+      rowData2.other = _other == undefined ? 0 : _other;
+      // alert(JSON.stringify(rowData2));
 
-      var rowData3 = {};
-      rowData3.push = rowData2;
-      rowData.products = rowData3;
+      var productList = [];
+      productList.push(rowData2);
+      rowData.products = productList;
 
       if($scope.deliveryList.length < 1){
         // alert("a:" + $scope.deliveryList.length + " pos:" + $scope._position);
@@ -667,6 +723,7 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
       $scope.deliveryList[_clientPos].categoryName = _categoryName;
       $scope.deliveryList[_clientPos].clientName = _clientName;
 
+      // $scope.$apply();
       clientUpdDialog.hide();
       $scope.updated = true;
     };
@@ -679,7 +736,6 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
         // alert(_categoryName);
         $scope._clientPos = _clientPos;
         getProductDatabase();
-        // selectProductDatabase();
         clientProductAddDialog.show();
       });
     };
@@ -691,14 +747,15 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
       var product = _productId.split("|");
       rowData2.productId = product[0];
       rowData2.productName = product[1];
-      rowData2.mon = _mon;
-      rowData2.wed = _wed;
-      rowData2.fri = _fri;
-      rowData2.other = _other;
+      rowData2.mon = _mon == "" ? 0 : _mon;
+      rowData2.wed = _wed == "" ? 0 : _wed;
+      rowData2.fri = _fri == "" ? 0 : _fri;
+      rowData2.other = _other == "" ? 0 : _other;
       alert(JSON.stringify(rowData2));
 
       $scope.deliveryList[_clientPos].products.push(rowData2);
 
+      // $scope.$apply();
       clientProductAddDialog.hide();
       $scope.updated = true;
     };
@@ -715,7 +772,12 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
     
     $scope.insertProduct = function(_productName) {
       // alert(_productId + "/" + _productName);
-      insertProductDatabase(_productName).then(selectProductDatabase()).then(selectDeliveryDatabase());
+      insertProductDatabase(_productName).then(
+        selectProductDatabase()
+      ).then(
+        selectDeliveryDatabase()
+      );
+      // $scope.$apply();
       productAddDialog.hide();
     };
 
@@ -749,6 +811,7 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
       // $scope.$apply($scope.deliveryList);
       // alert("done");
 
+      // $scope.$apply();
       clientProductDelDialog.hide();
       $scope.updated = true;
     };
@@ -832,11 +895,11 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
               }, 
               function(){
                 // 失敗時
-                // alert("6- insert fail");
+                alert("6- insert fail");
               }, 
               function(){
                 // 成功時
-                // alert("6- insert success");
+                alert("6- insert success");
                 resolve();
               }
           );
@@ -845,9 +908,9 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
       });
     };
 
-    // ClientByDate Database for delete TODO
+    // ClientByDate Database for delete
     var deleteClientByDateDatabase = function(_deliveryStDate){
-      alert("deleteClientByDateDatabase:" + _deliveryStDate);
+      // alert("deleteClientByDateDatabase:" + _deliveryStDate);
       return new Promise(function(resolve, reject) {
         // タイムアウト値の設定は任意
         setTimeout(function(){
@@ -860,11 +923,11 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
               }, 
               function(){
                 // 失敗時
-                alert("9- insert fail");
+                // alert("9- insert fail");
               }, 
               function(){
                 // 成功時
-                alert("9- insert success");
+                // alert("9- insert success");
                 resolve();
               }
           );
@@ -886,7 +949,11 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
     
     $scope.updateProduct = function(_productId, _productName) {
       // alert(_productId + "/" + _productName);
-      updateProductDatabase(_productId, _productName).then(selectProductDatabase()).then(selectDeliveryDatabase());
+      updateProductDatabase(_productId, _productName).then(
+        selectProductDatabase()
+      ).then(
+        selectDeliveryDatabase()
+      );
       productUpdDialog.hide();
     };
 
@@ -900,14 +967,13 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
       if($scope.updated){
         if(confirm("データが変更されています。保存しますか？")){
           $scope.save();
-          $scope.updated = false;
+        }else{
+          exit;
         }
-        $scope.updated = false;
       };
       // alert("aa");
     }
 
-    // save TODO
     $scope.save = function() {
       /**
        * Rule
@@ -922,13 +988,18 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
        * 配列の中には、existFlgを設定して、なければINSERT、あればUPDATE。
        * 先にclientIdを定義しているので、そのclientIdでclientByDateを設定
        */
+      // alert($scope.weekDaySt);
+      // alert($scope.deliveryList);
+      // alert($scope.productList);
       deleteClientByDateDatabase($scope.weekDaySt).then(
-        remakeDeliveryDatabase($scope.productList).then(
+        remakeDeliveryDatabase($scope.deliveryList).then(
           selectDeliveryDatabase().then(
             $scope.updateAlert()
           ).then(
             $socpe.$apply($scope.deliveryList)
           )
+        ).tnen(
+          selectProductDatabase()
         )
       );
     }
@@ -963,41 +1034,64 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
     };
 
     var remakeDeliveryDatabase = function(_deliveryList){
-      alert("remakeDeliveryDatabase");
+      // alert("remakeDeliveryDatabase" + $scope.productList);
       return new Promise(function(resolve, reject) {
         // タイムアウト値の設定は任意
         setTimeout(function(){
           console.log('Start remakeDeliveryDatabase');
           var db = window.openDatabase("Database", dbVer, "TestDatabase", 2048);
           // var db = window.openDatabase("Database", "1.0", "TestDatabase", 200000);
-            db.transaction(
-              function(tx){
-                alert("remakeDeliveryDatabase!!");
-                var len = _deliveryList.length;
-                for (var i = 0; i < len; i++) {
-                  var rowData = $scope.deliveryList[i];
-                  alert(JSON.stringify(rowData));
-
-                //   var len2 = rowData.products.length;
-                //   for (var i2 = 0; i2 < len2; i2++) {
-                //     // alert(JSON.stringify(rowData.products[i2]));
-                //     var rowData2 = rowData.products[i2];
-                //     // alert('UPDATE TDelivery SET mon = ' + rowData2['mon'] + ', wed = ' + rowData2['wed'] + ', fri = ' + rowData2['fri'] + ', other = ' + rowData2['other'] + ' WHERE clientId = ' + rowData2['clientId'] + ' AND productId = ' + rowData2['productId'] + ' AND deliveryStDate = "' + rowData2['deliveryStDate']+ '";');
-                //     tx.executeSql('UPDATE TDelivery SET mon = ' + rowData2.mon + ', wed = ' + rowData2.wed + ', fri = ' + rowData2.fri + ', other = ' + rowData2.other + ' WHERE deliveryId = ' + rowData2.deliveryId + ';');
-                //   }
+          db.transaction(
+            function(tx){
+              // alert("remakeDeliveryDatabase!!(" + JSON.stringify(_deliveryList) + ")");
+              var len = _deliveryList.length;
+              // alert("remakeDeliveryDatabase!!!!");
+              for (var i = 0; i < len; i++) {
+                var rowData = $scope.deliveryList[i];
+                // alert("rowData;" + JSON.stringify(rowData));
+                if(!rowData.isExist) {
+                  // INSERT
+                  tx.executeSql('INSERT INTO MClient \
+                  VALUES (' + rowData.clientId + ', \
+                  "' + rowData.categoryName + '", \
+                  "' + rowData.clientName + '", 0)');
+                }else{
+                  // UPDATE
+                  sqlString = 'UPDATE MClient\
+                    SET categoryName = "' + rowData.categoryName + '", \
+                    clientName = "' + rowData.clientName + '"  \
+                    WHERE clientId = ' + rowData.clientId;
                 }
-              }, 
-              function(){
-                // 失敗時
-                // alert("4- create fail");
-              }, 
-              function(){
-                // 成功時
-                // alert("4- create success");
+                // alert($scope.maxClientByDateId);
+                tx.executeSql('INSERT INTO TClientByDate(clientbydateId, clientId, deliveryStDate, orderNum, deleteFlg) VALUES \
+                (' + $scope.maxClientByDateId + ', ' + rowData.clientId + ', "' + $scope.weekDaySt + '", ' + i + ', 0)');
+
+                var len2 = rowData.products.length;
+                // alert("rowData.products" + JSON.stringify(rowData.products));
+                for (var i2 = 0; i2 < len2; i2++) {
+                  // alert(JSON.stringify(rowData.products[i2]));
+                  var rowData2 = rowData.products[i2];
+                  var sql = 'INSERT INTO TDelivery(clientbydateId, productId, mon, wed, fri, other) VALUES \
+                  (' + $scope.maxClientByDateId + ', ' + rowData2.productId + ', ' + rowData2.mon + ', ' + rowData2.wed + ', ' + rowData2.fri + ', ' + rowData2.other + ')';
+                  tx.executeSql(sql);
+                }
+                $scope.maxClientByDateId++;
               }
+              // alert("remakeDeliveryDatabase?!");
+            }, 
+            function(){
+              // 失敗時
+              alert("4- create fail");
+            }, 
+            function(){
+              // 成功時
+              // alert("4- create success");
+              // selectDeliveryDatabase();
+              $scope.updated = false;
+              resolve();
+            }
           );
           console.log('End remakeDeliveryDatabase');
-          resolve();
         },100);
       });
     };
