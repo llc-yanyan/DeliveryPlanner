@@ -54,22 +54,22 @@ app.value('initService', {
       {
         "clientId": 15,
         "categoryName": "新井宿",
-        "clientName": "金井金造",
+        "clientName": "須藤",
       },
       {
         "clientId": 16,
         "categoryName": "新井宿",
-        "clientName": "松井洋子",
+        "clientName": "金井金造",
       },
       {
         "clientId": 17,
-        "categoryName": "赤山",
-        "clientName": "桜井",
+        "categoryName": "新井宿",
+        "clientName": "松井洋子",
       },
       {
         "clientId": 18,
-        "categoryName": "",
-        "clientName": "伊藤きよ",
+        "categoryName": "赤山",
+        "clientName": "桜井",
       },
       {
         "clientId": 19,
@@ -90,11 +90,6 @@ app.value('initService', {
         "clientId": 22,
         "categoryName": "新井宿",
         "clientName": "矢作勝司",
-      },
-      {
-        "clientId": 23,
-        "categoryName": "新井宿",
-        "clientName": "芦田勝男",
       },
       {
         "clientId": 24,
@@ -135,11 +130,6 @@ app.value('initService', {
         "clientId": 31,
         "categoryName": "",
         "clientName": "高津廣光",
-      },
-      {
-        "clientId": 32,
-        "categoryName": "",
-        "clientName": "高橋静江",
       },
       {
         "clientId": 33,
@@ -184,7 +174,7 @@ app.value('initService', {
       {
         "clientId": 41,
         "categoryName": "石神",
-        "clientName": "田中理経",
+        "clientName": "田中愛子",
       },
       {
         "clientId": 42,
@@ -253,18 +243,23 @@ app.value('initService', {
       },
       {
         "clientId": 55,
-        "categoryName": "",
-        "clientName": "田名辺美香",
+        "categoryName": "北原台2-245",
+        "clientName": "石上",
       },
       {
         "clientId": 56,
         "categoryName": "",
-        "clientName": "菊地篤",
+        "clientName": "田名辺美香",
       },
       {
         "clientId": 57,
         "categoryName": "",
-        "clientName": "山口文子",
+        "clientName": "菊地篤",
+      },
+      {
+        "clientId": 58,
+        "categoryName": "石神",
+        "clientName": "駒崎林一郎",
       },
       {
         "clientId": 59,
@@ -342,11 +337,6 @@ app.value('initService', {
         "clientName": "赤山モータース",
       },
       {
-        "clientId": 75,
-        "categoryName": "赤山",
-        "clientName": "松本清美",
-      },
-      {
         "clientId": 76,
         "categoryName": "赤山",
         "clientName": "高松セツ",
@@ -363,16 +353,91 @@ app.value('initService', {
       },
       {
         "clientId": 79,
+        "categoryName": "",
+        "clientName": "高京園",
+      },
+      {
+        "clientId": 80,
+        "categoryName": "",
+        "clientName": "大峯電気設",
+      },
+      {
+        "clientId": 81,
+        "categoryName": "",
+        "clientName": "伊藤了",
+      },
+      {
+        "clientId": 82,
+        "categoryName": "",
+        "clientName": "佐藤一能",
+      },
+      {
+        "clientId": 83,
+        "categoryName": "",
+        "clientName": "海老原久男",
+      },
+      {
+        "clientId": 84,
+        "categoryName": "",
+        "clientName": "土屋(山口)",
+      },
+      {
+        "clientId": 85,
+        "categoryName": "",
+        "clientName": "渡辺舞",
+      },
+      {
+        "clientId": 86,
+        "categoryName": "",
+        "clientName": "長屋",
+      },
+      {
+        "clientId": 87,
+        "categoryName": "",
+        "clientName": "高田",
+      },
+      {
+        "clientId": 88,
+        "categoryName": "",
+        "clientName": "土屋茂",
+      },
+      {
+        "clientId": 89,
+        "categoryName": "",
+        "clientName": "喜多見",
+      },
+      {
+        "clientId": 90,
+        "categoryName": "",
+        "clientName": "熊木さつき",
+      },
+      {
+        "clientId": 91,
+        "categoryName": "ｸｰﾗｰの上",
+        "clientName": "小林",
+      },
+      {
+        "clientId": 92,
+        "categoryName": "",
+        "clientName": "鈴木三郎",
+      },
+      {
+        "clientId": 93,
+        "categoryName": "",
+        "clientName": "島根",
+      },
+      {
+        "clientId": 94,
         "categoryName": "桜町3",
         "clientName": "星野道代",
       },
       {
-        "clientId": 80,
+        "clientId": 95,
         "categoryName": "自",
         "clientName": "福島美智子",
       },
       {
-        "clientId": 81,
+        "clientId": 96,
         "categoryName": "桜町5",
         "clientName": "小林成子",
       },
@@ -441,7 +506,7 @@ app.value('initService', {
       },
       {
         "productId": 16,
-        "productName": "ヤサミン",
+        "productName": "セサミン",
       },
       {
         "productId": 17,
@@ -485,7 +550,7 @@ app.value('initService', {
       {
         "clientId": 1,
         "productId": 1,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 2,
         "wed": 2,
         "fri": 3,
@@ -494,7 +559,7 @@ app.value('initService', {
       {
         "clientId": 1,
         "productId": 14,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 4,
         "wed": 4,
         "fri": 6,
@@ -503,7 +568,7 @@ app.value('initService', {
       {
         "clientId": 2,
         "productId": 2,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 2,
         "wed": 2,
         "fri": 3,
@@ -512,7 +577,7 @@ app.value('initService', {
       {
         "clientId": 3,
         "productId": 20,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 1,
         "wed": 0,
         "fri": 1,
@@ -521,25 +586,16 @@ app.value('initService', {
       {
         "clientId": 3,
         "productId": 1,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 2,
         "wed": 0,
         "fri": 2,
         "other": 0,
       },
       {
-        "clientId": 4,
-        "productId": 1,
-        "deliveryStDate": "2018-9-3",
-        "mon": 2,
-        "wed": 2,
-        "fri": 3,
-        "other": 0,
-      },
-      {
         "clientId": 6,
         "productId": 18,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 2,
         "wed": 0,
         "fri": 0,
@@ -548,7 +604,7 @@ app.value('initService', {
       {
         "clientId": 6,
         "productId": 9,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 4,
         "wed": 0,
         "fri": 0,
@@ -557,7 +613,7 @@ app.value('initService', {
       {
         "clientId": 7,
         "productId": 18,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 0,
         "wed": 0,
         "fri": 3,
@@ -566,16 +622,17 @@ app.value('initService', {
       {
         "clientId": 7,
         "productId": 1,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 2,
         "wed": 2,
         "fri": 0,
         "other": 0,
       },
+//-------------------------- done
       {
         "clientId": 8,
         "productId": 23,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 0,
         "wed": 0,
         "fri": 1,
@@ -584,7 +641,7 @@ app.value('initService', {
       {
         "clientId": 8,
         "productId": 18,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 0,
         "wed": 0,
         "fri": 2,
@@ -593,7 +650,7 @@ app.value('initService', {
       {
         "clientId": 9,
         "productId": 22,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 1,
         "wed": 1,
         "fri": 0,
@@ -602,7 +659,7 @@ app.value('initService', {
       {
         "clientId": 11,
         "productId": 8,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 2,
         "wed": 2,
         "fri": 3,
@@ -611,7 +668,7 @@ app.value('initService', {
       {
         "clientId": 11,
         "productId": 9,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 2,
         "wed": 2,
         "fri": 3,
@@ -620,7 +677,7 @@ app.value('initService', {
       {
         "clientId": 14,
         "productId": 18,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 1,
         "wed": 1,
         "fri": 1,
@@ -629,7 +686,7 @@ app.value('initService', {
       {
         "clientId": 14,
         "productId": 2,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 1,
         "wed": 1,
         "fri": 2,
@@ -638,7 +695,7 @@ app.value('initService', {
       {
         "clientId": 15,
         "productId": 2,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 1,
         "wed": 1,
         "fri": 1,
@@ -647,7 +704,7 @@ app.value('initService', {
       {
         "clientId": 16,
         "productId": 1,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 2,
         "wed": 2,
         "fri": 3,
@@ -656,7 +713,7 @@ app.value('initService', {
       {
         "clientId": 17,
         "productId": 22,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 0,
         "wed": 2,
         "fri": 0,
@@ -665,7 +722,7 @@ app.value('initService', {
       {
         "clientId": 18,
         "productId": 8,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 2,
         "wed": 2,
         "fri": 3,
@@ -674,7 +731,7 @@ app.value('initService', {
       {
         "clientId": 19,
         "productId": 2,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 2,
         "wed": 2,
         "fri": 3,
@@ -683,7 +740,7 @@ app.value('initService', {
       {
         "clientId": 20,
         "productId": 14,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 2,
         "wed": 2,
         "fri": 3,
@@ -692,7 +749,7 @@ app.value('initService', {
       {
         "clientId": 20,
         "productId": 8,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 2,
         "wed": 2,
         "fri": 3,
@@ -701,7 +758,7 @@ app.value('initService', {
       {
         "clientId": 20,
         "productId": 1,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 0,
         "wed": 0,
         "fri": 0,
@@ -710,7 +767,7 @@ app.value('initService', {
       {
         "clientId": 21,
         "productId": 18,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 2,
         "wed": 2,
         "fri": 0,
@@ -719,7 +776,7 @@ app.value('initService', {
       {
         "clientId": 21,
         "productId": 9,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 2,
         "wed": 2,
         "fri": 0,
@@ -728,7 +785,7 @@ app.value('initService', {
       {
         "clientId": 22,
         "productId": 1,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 2,
         "wed": 2,
         "fri": 3,
@@ -737,7 +794,7 @@ app.value('initService', {
       {
         "clientId": 22,
         "productId": 14,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 2,
         "wed": 2,
         "fri": 3,
@@ -746,7 +803,7 @@ app.value('initService', {
       {
         "clientId": 23,
         "productId": 21,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 1,
         "wed": 0,
         "fri": 0,
@@ -755,7 +812,7 @@ app.value('initService', {
       {
         "clientId": 24,
         "productId": 1,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 2,
         "wed": 2,
         "fri": 3,
@@ -764,7 +821,7 @@ app.value('initService', {
       {
         "clientId": 25,
         "productId": 14,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 2,
         "wed": 0,
         "fri": 3,
@@ -773,7 +830,7 @@ app.value('initService', {
       {
         "clientId": 26,
         "productId": 18,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 2,
         "wed": 2,
         "fri": 3,
@@ -782,7 +839,7 @@ app.value('initService', {
       {
         "clientId": 27,
         "productId": 22,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 1,
         "wed": 0,
         "fri": 1,
@@ -791,7 +848,7 @@ app.value('initService', {
       {
         "clientId": 28,
         "productId": 2,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 2,
         "wed": 2,
         "fri": 3,
@@ -800,7 +857,7 @@ app.value('initService', {
       {
         "clientId": 28,
         "productId": 18,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 2,
         "wed": 2,
         "fri": 3,
@@ -809,7 +866,7 @@ app.value('initService', {
       {
         "clientId": 28,
         "productId": 1,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 2,
         "wed": 2,
         "fri": 3,
@@ -818,7 +875,7 @@ app.value('initService', {
       {
         "clientId": 29,
         "productId": 19,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 5,
         "wed": 0,
         "fri": 0,
@@ -827,7 +884,7 @@ app.value('initService', {
       {
         "clientId": 30,
         "productId": 8,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 3,
         "wed": 0,
         "fri": 0,
@@ -836,7 +893,7 @@ app.value('initService', {
       {
         "clientId": 30,
         "productId": 22,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 2,
         "wed": 0,
         "fri": 1,
@@ -845,7 +902,7 @@ app.value('initService', {
       {
         "clientId": 31,
         "productId": 1,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 2,
         "wed": 2,
         "fri": 3,
@@ -854,7 +911,7 @@ app.value('initService', {
       {
         "clientId": 32,
         "productId": 14,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 2,
         "wed": 2,
         "fri": 3,
@@ -863,7 +920,7 @@ app.value('initService', {
       {
         "clientId": 33,
         "productId": 9,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 2,
         "wed": 0,
         "fri": 2,
@@ -872,7 +929,7 @@ app.value('initService', {
       {
         "clientId": 33,
         "productId": 8,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 0,
         "wed": 0,
         "fri": 0,
@@ -881,7 +938,7 @@ app.value('initService', {
       {
         "clientId": 34,
         "productId": 5,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 1,
         "wed": 0,
         "fri": 1,
@@ -890,7 +947,7 @@ app.value('initService', {
       {
         "clientId": 34,
         "productId": 1,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 1,
         "wed": 0,
         "fri": 1,
@@ -899,7 +956,7 @@ app.value('initService', {
       {
         "clientId": 35,
         "productId": 8,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 1,
         "wed": 1,
         "fri": 1,
@@ -908,7 +965,7 @@ app.value('initService', {
       {
         "clientId": 35,
         "productId": 1,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 2,
         "wed": 2,
         "fri": 3,
@@ -917,7 +974,7 @@ app.value('initService', {
       {
         "clientId": 36,
         "productId": 20,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 1,
         "wed": 1,
         "fri": 1,
@@ -926,7 +983,7 @@ app.value('initService', {
       {
         "clientId": 37,
         "productId": 1,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 2,
         "wed": 2,
         "fri": 3,
@@ -935,7 +992,7 @@ app.value('initService', {
       {
         "clientId": 38,
         "productId": 1,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 1,
         "wed": 1,
         "fri": 1,
@@ -944,7 +1001,7 @@ app.value('initService', {
       {
         "clientId": 38,
         "productId": 18,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 1,
         "wed": 1,
         "fri": 2,
@@ -953,7 +1010,7 @@ app.value('initService', {
       {
         "clientId": 39,
         "productId": 18,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 2,
         "wed": 2,
         "fri": 3,
@@ -962,7 +1019,7 @@ app.value('initService', {
       {
         "clientId": 40,
         "productId": 2,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 4,
         "wed": 4,
         "fri": 4,
@@ -971,7 +1028,7 @@ app.value('initService', {
       {
         "clientId": 40,
         "productId": 3,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 0,
         "wed": 0,
         "fri": 2,
@@ -980,7 +1037,7 @@ app.value('initService', {
       {
         "clientId": 41,
         "productId": 1,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 2,
         "wed": 2,
         "fri": 3,
@@ -989,7 +1046,7 @@ app.value('initService', {
       {
         "clientId": 41,
         "productId": 2,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 1,
         "wed": 1,
         "fri": 1,
@@ -998,7 +1055,7 @@ app.value('initService', {
       {
         "clientId": 42,
         "productId": 21,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 1,
         "wed": 1,
         "fri": 0,
@@ -1007,7 +1064,7 @@ app.value('initService', {
       {
         "clientId": 43,
         "productId": 14,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 2,
         "wed": 2,
         "fri": 3,
@@ -1016,7 +1073,7 @@ app.value('initService', {
       {
         "clientId": 44,
         "productId": 1,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 1,
         "wed": 1,
         "fri": 1,
@@ -1025,7 +1082,7 @@ app.value('initService', {
       {
         "clientId": 44,
         "productId": 9,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 1,
         "wed": 1,
         "fri": 1,
@@ -1034,7 +1091,7 @@ app.value('initService', {
       {
         "clientId": 45,
         "productId": 1,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 2,
         "wed": 2,
         "fri": 3,
@@ -1043,7 +1100,7 @@ app.value('initService', {
       {
         "clientId": 46,
         "productId": 22,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 1,
         "wed": 0,
         "fri": 0,
@@ -1052,7 +1109,7 @@ app.value('initService', {
       {
         "clientId": 46,
         "productId": 24,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 0,
         "wed": 1,
         "fri": 0,
@@ -1061,7 +1118,7 @@ app.value('initService', {
       {
         "clientId": 46,
         "productId": 3,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 0,
         "wed": 0,
         "fri": 2,
@@ -1070,7 +1127,7 @@ app.value('initService', {
       {
         "clientId": 47,
         "productId": 8,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 2,
         "wed": 2,
         "fri": 3,
@@ -1079,7 +1136,7 @@ app.value('initService', {
       {
         "clientId": 47,
         "productId": 25,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 2,
         "wed": 2,
         "fri": 3,
@@ -1088,7 +1145,7 @@ app.value('initService', {
       {
         "clientId": 48,
         "productId": 14,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 5,
         "wed": 0,
         "fri": 0,
@@ -1097,7 +1154,7 @@ app.value('initService', {
       {
         "clientId": 49,
         "productId": 1,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 1,
         "wed": 1,
         "fri": 1,
@@ -1106,7 +1163,7 @@ app.value('initService', {
       {
         "clientId": 49,
         "productId": 14,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 2,
         "wed": 2,
         "fri": 2,
@@ -1115,7 +1172,7 @@ app.value('initService', {
       {
         "clientId": 49,
         "productId": 9,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 2,
         "wed": 2,
         "fri": 2,
@@ -1124,7 +1181,7 @@ app.value('initService', {
       {
         "clientId": 50,
         "productId": 1,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 2,
         "wed": 2,
         "fri": 3,
@@ -1133,7 +1190,7 @@ app.value('initService', {
       {
         "clientId": 51,
         "productId": 2,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 2,
         "wed": 2,
         "fri": 3,
@@ -1142,7 +1199,7 @@ app.value('initService', {
       {
         "clientId": 51,
         "productId": 19,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 2,
         "wed": 2,
         "fri": 3,
@@ -1151,7 +1208,7 @@ app.value('initService', {
       {
         "clientId": 52,
         "productId": 8,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 2,
         "wed": 2,
         "fri": 3,
@@ -1160,7 +1217,7 @@ app.value('initService', {
       {
         "clientId": 53,
         "productId": 1,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 2,
         "wed": 2,
         "fri": 3,
@@ -1169,7 +1226,7 @@ app.value('initService', {
       {
         "clientId": 53,
         "productId": 9,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 2,
         "wed": 2,
         "fri": 3,
@@ -1178,7 +1235,7 @@ app.value('initService', {
       {
         "clientId": 54,
         "productId": 8,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 2,
         "wed": 3,
         "fri": 0,
@@ -1187,7 +1244,7 @@ app.value('initService', {
       {
         "clientId": 55,
         "productId": 8,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 4,
         "wed": 4,
         "fri": 6,
@@ -1196,7 +1253,7 @@ app.value('initService', {
       {
         "clientId": 56,
         "productId": 8,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 2,
         "wed": 2,
         "fri": 3,
@@ -1205,7 +1262,7 @@ app.value('initService', {
       {
         "clientId": 57,
         "productId": 21,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 0,
         "wed": 0,
         "fri": 1,
@@ -1214,7 +1271,7 @@ app.value('initService', {
       {
         "clientId": 59,
         "productId": 1,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 2,
         "wed": 2,
         "fri": 3,
@@ -1223,7 +1280,7 @@ app.value('initService', {
       {
         "clientId": 61,
         "productId": 8,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 2,
         "wed": 2,
         "fri": 3,
@@ -1232,7 +1289,7 @@ app.value('initService', {
       {
         "clientId": 62,
         "productId": 14,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 1,
         "wed": 0,
         "fri": 1,
@@ -1241,7 +1298,7 @@ app.value('initService', {
       {
         "clientId": 62,
         "productId": 6,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 2,
         "wed": 0,
         "fri": 2,
@@ -1250,7 +1307,7 @@ app.value('initService', {
       {
         "clientId": 63,
         "productId": 1,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 0,
         "wed": 2,
         "fri": 2,
@@ -1259,7 +1316,7 @@ app.value('initService', {
       {
         "clientId": 63,
         "productId": 8,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 0,
         "wed": 1,
         "fri": 1,
@@ -1268,7 +1325,7 @@ app.value('initService', {
       {
         "clientId": 64,
         "productId": 2,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 2,
         "wed": 2,
         "fri": 2,
@@ -1277,7 +1334,7 @@ app.value('initService', {
       {
         "clientId": 65,
         "productId": 1,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 2,
         "wed": 2,
         "fri": 3,
@@ -1286,7 +1343,7 @@ app.value('initService', {
       {
         "clientId": 66,
         "productId": 18,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 2,
         "wed": 2,
         "fri": 2,
@@ -1295,7 +1352,7 @@ app.value('initService', {
       {
         "clientId": 66,
         "productId": 5,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 2,
         "wed": 2,
         "fri": 3,
@@ -1304,7 +1361,7 @@ app.value('initService', {
       {
         "clientId": 66,
         "productId": 13,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 2,
         "wed": 2,
         "fri": 2,
@@ -1313,7 +1370,7 @@ app.value('initService', {
       {
         "clientId": 67,
         "productId": 18,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 4,
         "wed": 4,
         "fri": 6,
@@ -1322,7 +1379,7 @@ app.value('initService', {
       {
         "clientId": 67,
         "productId": 14,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 2,
         "wed": 2,
         "fri": 3,
@@ -1331,7 +1388,7 @@ app.value('initService', {
       {
         "clientId": 68,
         "productId": 4,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 2,
         "wed": 2,
         "fri": 3,
@@ -1340,7 +1397,7 @@ app.value('initService', {
       {
         "clientId": 69,
         "productId": 18,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 3,
         "wed": 0,
         "fri": 0,
@@ -1349,7 +1406,7 @@ app.value('initService', {
       {
         "clientId": 69,
         "productId": 20,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 0,
         "wed": 0,
         "fri": 3,
@@ -1358,7 +1415,7 @@ app.value('initService', {
       {
         "clientId": 70,
         "productId": 9,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 2,
         "wed": 2,
         "fri": 3,
@@ -1367,7 +1424,7 @@ app.value('initService', {
       {
         "clientId": 71,
         "productId": 1,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 0,
         "wed": 2,
         "fri": 2,
@@ -1376,7 +1433,7 @@ app.value('initService', {
       {
         "clientId": 72,
         "productId": 2,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 2,
         "wed": 2,
         "fri": 2,
@@ -1385,7 +1442,7 @@ app.value('initService', {
       {
         "clientId": 73,
         "productId": 18,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 1,
         "wed": 1,
         "fri": 1,
@@ -1394,7 +1451,7 @@ app.value('initService', {
       {
         "clientId": 74,
         "productId": 4,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 2,
         "wed": 2,
         "fri": 2,
@@ -1403,7 +1460,7 @@ app.value('initService', {
       {
         "clientId": 74,
         "productId": 9,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 5,
         "wed": 5,
         "fri": 5,
@@ -1412,7 +1469,7 @@ app.value('initService', {
       {
         "clientId": 75,
         "productId": 19,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 2,
         "wed": 2,
         "fri": 3,
@@ -1421,7 +1478,7 @@ app.value('initService', {
       {
         "clientId": 75,
         "productId": 2,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 2,
         "wed": 2,
         "fri": 3,
@@ -1430,7 +1487,7 @@ app.value('initService', {
       {
         "clientId": 76,
         "productId": 14,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 1,
         "wed": 1,
         "fri": 1,
@@ -1439,7 +1496,7 @@ app.value('initService', {
       {
         "clientId": 77,
         "productId": 1,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 2,
         "wed": 2,
         "fri": 0,
@@ -1448,7 +1505,7 @@ app.value('initService', {
       {
         "clientId": 78,
         "productId": 8,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 2,
         "wed": 2,
         "fri": 3,
@@ -1457,7 +1514,7 @@ app.value('initService', {
       {
         "clientId": 79,
         "productId": 2,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 4,
         "wed": 4,
         "fri": 6,
@@ -1466,7 +1523,7 @@ app.value('initService', {
       {
         "clientId": 79,
         "productId": 19,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 2,
         "wed": 2,
         "fri": 3,
@@ -1475,7 +1532,7 @@ app.value('initService', {
       {
         "clientId": 80,
         "productId": 14,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 2,
         "wed": 2,
         "fri": 3,
@@ -1484,7 +1541,7 @@ app.value('initService', {
       {
         "clientId": 81,
         "productId": 4,
-        "deliveryStDate": "2018-9-3",
+        "deliveryStDate": "2018-9-17",
         "mon": 2,
         "wed": 2,
         "fri": 3,
