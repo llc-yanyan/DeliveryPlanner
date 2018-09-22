@@ -13,7 +13,7 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
     $scope.maxClientByDateId = 0;
     $scope.updated = false;
     var dbVer = "1.0.11";
-    var debug = 1;
+    var debug = false; // true.. is debugging
     
     // 開始日の算出
     today = new Date();
@@ -462,7 +462,7 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
     };
     
     var db = window.openDatabase("Database", '', "TestDatabase", 2048);
-    if(db.version != dbVer || debug == 1){
+    if(db.version != dbVer || debug == true){
       // alert("1- create db version:" + db.version + "/dbVer:" + dbVer);
       db.changeVersion(db.version, dbVer,
       function(tx) {
@@ -643,7 +643,7 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
         $scope._clientId = "";
         $scope._categoryName = "";
         $scope._clientName = "";
-        getProductDatabase();
+        // getProductDatabase();
         clientAddDialog.show();
       });
     };
@@ -657,7 +657,7 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
         $scope._categoryName = "";
         $scope._clientName = "";
         $scope._position = _position;
-        getProductDatabase();
+        // getProductDatabase();
         clientAddDialog.show();
       });
     };
@@ -732,7 +732,7 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
       }).then(function(clientProductAddDialog) {
         // alert(_categoryName);
         $scope._clientPos = _clientPos;
-        getProductDatabase();
+        // getProductDatabase();
         clientProductAddDialog.show();
       });
     };
@@ -748,7 +748,7 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
       rowData2.wed = _wed == undefined ? 0 : _wed;
       rowData2.fri = _fri == undefined ? 0 : _fri;
       rowData2.other = _other == undefined ? 0 : _other;
-      alert(JSON.stringify(rowData2));
+      // alert(JSON.stringify(rowData2));
 
       $scope.deliveryList[_clientPos].products.push(rowData2);
 
@@ -770,9 +770,7 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
     $scope.insertProduct = function(_productName) {
       // alert(_productId + "/" + _productName);
       insertProductDatabase(_productName).then(
-        selectProductDatabase()
-      ).then(
-        selectDeliveryDatabase()
+        getProductDatabase()
       );
       // $scope.$apply();
       productAddDialog.hide();
@@ -1015,7 +1013,7 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
             }, 
             function(){
               // 失敗時
-              alert("4- create fail");
+              // alert("4- create fail");
             }, 
             function(){
               // 成功時
