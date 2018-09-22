@@ -1,6 +1,7 @@
 // This is a JavaScript file
 app.value('initService', {
       init_client : [
+/*
       {
         "clientId": 1,
         "categoryName": "本町",
@@ -446,6 +447,7 @@ app.value('initService', {
         "categoryName": "桜町5",
         "clientName": "小林成子",
       },
+*/
       ],
       //
       init_product : [
@@ -552,6 +554,7 @@ app.value('initService', {
       ],
       // 
       init_delivery : [
+/*
       {
         "clientId": 1,
         "productId": 1,
@@ -1543,5 +1546,6 @@ app.value('initService', {
         "fri": 3,
         "other": 0,
       },
+*/
       ]
 });

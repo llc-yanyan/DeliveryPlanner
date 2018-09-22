@@ -12,7 +12,7 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
     $scope.maxClientId = 0;
     $scope.maxClientByDateId = 0;
     $scope.updated = false;
-    var dbVer = "1.0.10"; // base 1.0.10
+    var dbVer = "1.0.11";
     var debug = 1;
     
     // 開始日の算出
