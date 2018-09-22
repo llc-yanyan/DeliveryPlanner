@@ -993,6 +993,7 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
                     SET categoryName = "' + rowData.categoryName + '", \
                     clientName = "' + rowData.clientName + '"  \
                     WHERE clientId = ' + rowData.clientId;
+                  tx.executeSql(sqlString);
                 }
                 // alert($scope.maxClientByDateId);
                 tx.executeSql('INSERT INTO TClientByDate(clientbydateId, clientId, deliveryStDate, orderNum, deleteFlg) VALUES \
