@@ -47,6 +47,11 @@ app.value('initService', {
         "clientName": "石崎いよ子",
       },
       {
+        "clientId": 12,
+        "categoryName": "",
+        "clientName": "隆夫",
+      },
+      {
         "clientId": 14,
         "categoryName": "新井宿",
         "clientName": "長瀬造口",
@@ -628,23 +633,13 @@ app.value('initService', {
         "fri": 0,
         "other": 0,
       },
-//-------------------------- done
-      {
-        "clientId": 8,
-        "productId": 23,
-        "deliveryStDate": "2018-9-17",
-        "mon": 0,
-        "wed": 0,
-        "fri": 1,
-        "other": 0,
-      },
       {
         "clientId": 8,
         "productId": 18,
         "deliveryStDate": "2018-9-17",
-        "mon": 0,
+        "mon": 3,
         "wed": 0,
-        "fri": 2,
+        "fri": 3,
         "other": 0,
       },
       {
@@ -675,7 +670,7 @@ app.value('initService', {
         "other": 0,
       },
       {
-        "clientId": 14,
+        "clientId": 12,
         "productId": 18,
         "deliveryStDate": "2018-9-17",
         "mon": 1,
@@ -692,6 +687,7 @@ app.value('initService', {
         "fri": 2,
         "other": 0,
       },
+//-------------------------- done
       {
         "clientId": 15,
         "productId": 2,
