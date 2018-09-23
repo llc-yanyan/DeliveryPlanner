@@ -70,7 +70,7 @@
           <div class="center">配達先の追加</div>
         </ons-toolbar>
         <div style="padding: 10px;">
-      　   <ons-input ng-model="_categoryName" modifier="underbar" placeholder="エリア" type="text"></ons-input>
+          <ons-input ng-model="_categoryName" modifier="underbar" placeholder="エリア" type="text"></ons-input>
           <ons-input ng-model="_clientName" modifier="underbar" placeholder="名前" type="text"></ons-input>
 
           <ons-select ng-model="_productId">
@@ -83,8 +83,9 @@
           <ons-input ng-model="_wed" modifier="underbar" placeholder="水曜" type="number"></ons-input>
           <ons-input ng-model="_fri" modifier="underbar" placeholder="金曜" type="number"></ons-input>
           <ons-input ng-model="_other" modifier="underbar" placeholder="他" type="number"></ons-input>
+          <ons-input ng-model="_position" type="text" value="{_position}"></ons-input>
 
-          <ons-button ng-click="insertClient(_categoryName, _clientName, _productId, _mon, _wed, _fri, _other, position)">登録</ons-button>
+          <ons-button ng-click="insertClient(_categoryName, _clientName, _productId, _mon, _wed, _fri, _other, _position)">登録</ons-button>
         </div>
       </ons-dialog>
     </ons-template>
@@ -246,7 +247,7 @@
           </tbody>
         </table>
         <div ng-hide="!!deliveryList.length">
-          <ons-button class="btnLarge" ng-click="dialogDispAddClient()">配達先追加</ons-button>
+          <ons-button class="btnLarge" ng-click="dialogDispAddClient(0)">配達先追加</ons-button>
         </div>
       </div>
     </ons-page>

@@ -446,6 +446,7 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
                 $scope.deliveryList = deliveryArray;
 
                 $scope.copyBtnHide = true;
+                $scope.updated = true;
 
                 // scopeの更新と反映
                 $scope.$apply($scope.deliveryList); // ★
@@ -650,6 +651,7 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
 
     // 顧客データのInsert(位置指定)
     $scope.dialogDispAddClient = function(_position) {
+      // alert(_position);
       ons.createDialog('clientAddDialog.html', {
         parentScope: $scope
       }).then(function(clientAddDialog) {
@@ -663,7 +665,8 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
     };
 
     // 配達先データのInsert
-    $scope.insertClient = function(_categoryName, _clientName, _productId, _mon, _wed, _fri, _other, _clientId, _position) {
+    $scope.insertClient = function(_categoryName, _clientName, _productId, _mon, _wed, _fri, _other, _position) {
+      // alert(_categoryName + "/" + _clientName + "@" + _position);
       var rowData = {};
       rowData.clientName = _clientName;
       rowData.categoryName = _categoryName;
@@ -686,14 +689,14 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
       rowData.products = productList;
 
       if($scope.deliveryList.length < 1){
-        // alert("a:" + $scope.deliveryList.length + " pos:" + $scope._position);
+        // alert("a:" + $scope.deliveryList.length + " pos:" + _position);
         $scope.deliveryList.push(rowData);
-      }else if($scope._position == 0){
+      }else if(_position == 0){
         // alert("b");
         $scope.deliveryList.unshift(rowData);
       }else{
         // alert("c");
-        $scope.deliveryList.splice($scope._position, 1, rowData);
+        $scope.deliveryList.splice(_position, 0, rowData);
       }
 
       clientAddDialog.hide();
@@ -930,8 +933,10 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
           ).then(
             $socpe.$apply($scope.deliveryList)
           )
-        ).tnen(
-          selectProductDatabase()
+        ).then(
+          selectProductDatabase().then(
+            $socpe.$apply($scope.productList)
+          )
         )
       );
     }
