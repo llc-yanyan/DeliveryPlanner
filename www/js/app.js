@@ -122,11 +122,11 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
                 $scope.deliveryList = deliveryArray;
 
                 if (len === 0) {
-                  if (today >= new Date()) {
+                //   if (today >= new Date()) {
                     $scope.copyBtnHide = false;
-                  } else {
-                    $scope.copyBtnHide = true;
-                  }
+                //   } else {
+                //     $scope.copyBtnHide = true;
+                //   }
                 } else {
                   $scope.copyBtnHide = true;
                 }
@@ -908,12 +908,14 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
 
     // updated check!!
     $scope.updatedCheck = function() {
+      // alert("aaaaa");
       if($scope.updated){
         if(confirm("データが変更されています。保存しますか？")){
           $scope.save();
-        }else{
-          exit;
+        // }else{
+        //   exit;
         }
+        exit;
       };
       // alert("aa");
     }
