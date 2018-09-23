@@ -28,6 +28,7 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
 
     // 検索(Delivery)
     var selectDeliveryDatabase = function(){
+      // alert("selectDeliveryDatabase");
         return new Promise(function(resolve, reject){
             setTimeout(function(){
                 console.log('Start selectDatabase');
@@ -147,6 +148,7 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
 
     // 検索(Product)
     var selectProductDatabase = function(){
+      // alert("selectProductDatabase");
         return new Promise(function(resolve, reject){
             setTimeout(function(){
                 console.log('Start selectDatabase');
@@ -928,15 +930,7 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
       // alert($scope.productList);
       deleteClientByDateDatabase($scope.weekDaySt).then(
         remakeDeliveryDatabase($scope.deliveryList).then(
-          selectDeliveryDatabase().then(
-            $scope.updateAlert()
-          ).then(
-            $socpe.$apply($scope.deliveryList)
-          )
-        ).then(
-          selectProductDatabase().then(
-            $socpe.$apply($scope.productList)
-          )
+          $scope.updateAlert()
         )
       );
     }
@@ -1024,7 +1018,9 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
             function(){
               // 成功時
               // alert("4- create success");
-              // selectDeliveryDatabase();
+              selectDeliveryDatabase();
+              selectProductDatabase();
+
               $scope.updated = false;
               resolve();
             }
