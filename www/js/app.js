@@ -133,6 +133,7 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
 
                 // scopeの更新と反映
                 $scope.$apply($scope.deliveryList); // ★
+                // alet("selectDeliveryDatabase");
                 // alert("query success");
                 console.log('End query');
                 // alert(JSON.stringify($scope.deliveryList));
@@ -209,6 +210,7 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
 
                 // scopeの更新と反映
                 $scope.$apply($scope.productList);        // ★
+                // alet("selectProductDatabase");
                 // alert("query success");
                 console.log('End query');
                 // alert(JSON.stringify($scope.productList));
@@ -268,6 +270,7 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
 
                 // scopeの更新と反映
                 $scope.$apply($scope.getProductList);        // ★
+                // alet("getProductDatabase");
                 // alert("query success");
                 console.log('End query');
                 // alert(JSON.stringify($scope.productList));
@@ -309,6 +312,7 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
                 // alert("12- query success");
                 $scope.maxClientId = results.rows.item(0).maxClientId + 1;
                 $scope.$apply($scope.maxClientId); // ★
+                // alet("getMaxClientId");
                 // alert($scope.maxClientId);
                 resolve();
             };
@@ -348,6 +352,7 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
                 // alert("12- query success");
                 $scope.maxClientByDateId = results.rows.item(0).maxClientByDateId + 1;
                 $scope.$apply($scope.maxClientByDateId); // ★
+                // alet("maxClientByDateId");
                 // alert($scope.maxClientId);
                 resolve();
             };
@@ -452,6 +457,7 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
 
                 // scopeの更新と反映
                 $scope.$apply($scope.deliveryList); // ★
+                // alert("copyDeliveryDatabase");
                 // alert("5- query success");
                 console.log('End query');
                 // alert(JSON.stringify($scope.deliveryList));
@@ -534,18 +540,18 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
     
     // Order Down
     $scope.orderDown = function(_orderNum){
-      // alert('down' + _orderNum);
       // changeOrder(_clientId, _orderNum, 1).then(selectDeliveryDatabase());
       changeOrderArray(_orderNum, _orderNum + 1);
-      $scope.updated = true;
+      // $scope.updated = true;
+      // alert('down' + _orderNum);
     };
 
     // Order Up
     $scope.orderUp = function(_orderNum){
-      // alert('up' + _orderNum);
       // changeOrder(_clientId, _orderNum, -1).then(selectDeliveryDatabase());
       changeOrderArray(_orderNum, _orderNum - 1);
-      $scope.updated = true;
+      // $scope.updated = true;
+      // alert('up' + _orderNum);
     };
 
     // Order Change Array
@@ -554,7 +560,8 @@ app.controller('AppController', function(initService, formatDate, calcStWeekDate
       // alert("before:" + JSON.stringify($scope.deliveryList));
       $scope.deliveryList = moveAt($scope.deliveryList, _orderNum, _orderTo);
       // alert("after:" + JSON.stringify($scope.deliveryList));
-      $scope.$apply($scope.deliveryList);
+      // $scope.$apply($scope.deliveryList);
+      $scope.updated = true;
     }
 
     $scope.today = function() {
