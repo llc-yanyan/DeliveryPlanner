@@ -83,7 +83,7 @@
           <ons-input ng-model="_wed" modifier="underbar" placeholder="水曜" type="number"></ons-input>
           <ons-input ng-model="_fri" modifier="underbar" placeholder="金曜" type="number"></ons-input>
           <ons-input ng-model="_other" modifier="underbar" placeholder="他" type="number"></ons-input>
-          <ons-input ng-model="_position" type="text" value="{_position}"></ons-input>
+          <ons-input ng-model="_position" type="hidden" value="{_position}"></ons-input>
 
           <ons-button ng-click="insertClient(_categoryName, _clientName, _productId, _mon, _wed, _fri, _other, _position)">登録</ons-button>
         </div>
